@@ -1,0 +1,42 @@
+{
+  "name": "bookstore",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "db": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"New-Item -ItemType Directory -Force .mongodb-data,.mongodb-log | Out-Null; & 'C:\\Program Files\\MongoDB\\Server\\8.0\\bin\\mongod.exe' --dbpath '.mongodb-data' --bind_ip 127.0.0.1 --port 27017 --logpath '.mongodb-log\\mongod.log' --logappend\"",
+    "dev": "nuxt dev",
+    "dev:host": "nuxt dev --host 0.0.0.0",
+    "preview": "nuxt preview",
+    "preview:host": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"$env:HOST='0.0.0.0'; $env:PORT='3000'; node .output/server/index.mjs\"",
+    "postinstall": "nuxt prepare",
+    "lint": "eslint .",
+    "typecheck": "nuxt typecheck",
+    "seed:admin": "npx tsx scripts/seed-admin.ts"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.700.0",
+    "@aws-sdk/s3-request-presigner": "^3.700.0",
+    "@iconify-json/lucide": "^1.2.98",
+    "@iconify-json/simple-icons": "^1.2.74",
+    "@nuxt/ui": "^4.5.1",
+    "@tato30/vue-pdf": "^2.1.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.0",
+    "nuxt": "^4.4.2",
+    "pdf-lib": "^1.17.1",
+    "pdfjs-dist": "^6.0.227",
+    "stripe": "^17.5.0",
+    "tailwindcss": "^4.2.1"
+  },
+  "devDependencies": {
+    "@nuxt/eslint": "^1.15.2",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.7",
+    "eslint": "^10.0.3",
+    "playwright": "^1.60.0",
+    "typescript": "^5.9.3",
+    "vue-tsc": "^3.2.5"
+  }
+}
