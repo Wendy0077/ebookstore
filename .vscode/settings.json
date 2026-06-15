@@ -1,0 +1,10 @@
+{
+  "files.encoding": "utf8",
+  "files.eol": "\n",
+  "[typescript]": {
+    "files.encoding": "utf8"
+  },
+  "[vue]": {
+    "files.encoding": "utf8"
+  }
+}

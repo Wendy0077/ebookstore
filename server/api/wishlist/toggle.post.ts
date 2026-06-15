@@ -9,17 +9,17 @@ export default defineEventHandler(async (event) => {
   const { bookId } = body || {}
 
   if (!bookId) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุ bookId' })
+    throw createError({ statusCode: 400, message: 'กรุณาระบุ bookId' })
   }
 
   const book = await Book.findById(bookId).select('_id')
   if (!book) {
-    throw createError({ statusCode: 404, statusMessage: 'ไม่พบหนังสือ' })
+    throw createError({ statusCode: 404, message: 'ไม่พบหนังสือ' })
   }
 
   const user = await User.findById(payload.userId).select('wishlist')
   if (!user) {
-    throw createError({ statusCode: 404, statusMessage: 'ไม่พบผู้ใช้งาน' })
+    throw createError({ statusCode: 404, message: 'ไม่พบผู้ใช้งาน' })
   }
 
   const current = (user.wishlist || []).map((id: any) => id.toString())

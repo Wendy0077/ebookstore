@@ -9,17 +9,17 @@ export default defineEventHandler(async (event) => {
 
   const downloadToken = await DownloadToken.findOne({ token })
   if (!downloadToken) {
-    throw createError({ statusCode: 404, statusMessage: 'ไม่พบ Token หรือ Token ไม่ถูกต้อง' })
+    throw createError({ statusCode: 404, message: 'ไม่พบ Token หรือ Token ไม่ถูกต้อง' })
   }
 
   // Check expiry
   if (new Date() > downloadToken.expiresAt) {
-    throw createError({ statusCode: 410, statusMessage: 'Token หมดอายุแล้ว' })
+    throw createError({ statusCode: 410, message: 'Token หมดอายุแล้ว' })
   }
 
   // Check download count
   if (downloadToken.downloadCount >= downloadToken.maxDownloads) {
-    throw createError({ statusCode: 429, statusMessage: `ดาวน์โหลดครบ ${downloadToken.maxDownloads} ครั้งแล้ว` })
+    throw createError({ statusCode: 403, message: `ดาวน์โหลดครบ ${downloadToken.maxDownloads} ครั้งแล้ว` })
   }
 
   const [book, user] = await Promise.all([
@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
   ])
 
   if (!book || !book.fileKey) {
-    throw createError({ statusCode: 404, statusMessage: 'ไม่พบไฟล์หนังสือ' })
+    throw createError({ statusCode: 404, message: 'ไม่พบไฟล์หนังสือ' })
   }
 
   // Get PDF from S3
@@ -36,7 +36,7 @@ export default defineEventHandler(async (event) => {
   try {
     pdfBytes = await getS3Object(book.fileKey)
   } catch {
-    throw createError({ statusCode: 500, statusMessage: 'ไม่สามารถดาวน์โหลดไฟล์ได้' })
+    throw createError({ statusCode: 500, message: 'ไม่สามารถดาวน์โหลดไฟล์ได้' })
   }
 
   // Watermark PDF

@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
         .lean()
 
     if (!order) {
-        throw createError({ statusCode: 404, statusMessage: 'ไม่พบคำสั่งซื้อ' })
+        throw createError({ statusCode: 404, message: 'ไม่พบคำสั่งซื้อ' })
     }
 
     // Get download tokens for this order

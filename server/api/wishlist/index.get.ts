@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     .lean()) as any
 
   if (!user) {
-    throw createError({ statusCode: 404, statusMessage: 'ไม่พบผู้ใช้งาน' })
+    throw createError({ statusCode: 404, message: 'ไม่พบผู้ใช้งาน' })
   }
 
   const wishlist = (user.wishlist || []) as any[]

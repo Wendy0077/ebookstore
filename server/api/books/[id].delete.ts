@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
 
   const book = await Book.findByIdAndDelete(id)
   if (!book) {
-    throw createError({ statusCode: 404, statusMessage: 'ไม่พบหนังสือ' })
+    throw createError({ statusCode: 404, message: 'ไม่พบหนังสือ' })
   }
 
   return { message: 'ลบหนังสือเรียบร้อย' }

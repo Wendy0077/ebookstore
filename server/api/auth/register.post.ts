@@ -1,20 +1,20 @@
 import User from '../../models/User'
-import { hashPassword, generateToken } from '../../utils/auth'
+import { hashPassword, generateToken, setAuthCookie } from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
 
   if (!body.email || !body.password || !body.name) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณากรอกข้อมูลให้ครบ (email, password, name)' })
+    throw createError({ statusCode: 400, message: 'กรุณากรอกข้อมูลให้ครบ (email, password, name)' })
   }
 
   if (body.password.length < 6) {
-    throw createError({ statusCode: 400, statusMessage: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร' })
+    throw createError({ statusCode: 400, message: 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร' })
   }
 
   const existingUser = await User.findOne({ email: body.email.toLowerCase() })
   if (existingUser) {
-    throw createError({ statusCode: 409, statusMessage: 'อีเมลนี้ถูกใช้งานแล้ว' })
+    throw createError({ statusCode: 409, message: 'อีเมลนี้ถูกใช้งานแล้ว' })
   }
 
   const hashedPassword = await hashPassword(body.password)
@@ -32,12 +32,7 @@ export default defineEventHandler(async (event) => {
     role: user.role
   })
 
-  setCookie(event, 'auth_token', token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 60 * 60 * 24 * 7
-  })
+  setAuthCookie(event, token)
 
   return {
     user: {

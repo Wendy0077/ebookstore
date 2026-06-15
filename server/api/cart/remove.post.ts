@@ -6,12 +6,12 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event)
 
   if (!body.bookId) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุ bookId' })
+    throw createError({ statusCode: 400, message: 'กรุณาระบุ bookId' })
   }
 
   const cart = await Cart.findOne({ user: user.userId })
   if (!cart) {
-    throw createError({ statusCode: 404, statusMessage: 'ไม่พบตะกร้า' })
+    throw createError({ statusCode: 404, message: 'ไม่พบตะกร้า' })
   }
 
   cart.items = cart.items.filter(

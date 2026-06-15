@@ -1,12 +1,12 @@
 import User from '../../models/User'
-import { generateToken } from '../../utils/auth'
+import { generateToken, setAuthCookie } from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const { credential } = body
 
   if (!credential) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุ Google credential' })
+    throw createError({ statusCode: 400, message: 'กรุณาระบุ Google credential' })
   }
 
   // Verify Google ID token
@@ -28,7 +28,7 @@ export default defineEventHandler(async (event) => {
       avatar: response.picture || ''
     }
   } catch (err: any) {
-    throw createError({ statusCode: 401, statusMessage: 'Google token ไม่ถูกต้อง' })
+    throw createError({ statusCode: 401, message: 'Google token ไม่ถูกต้อง' })
   }
 
   // Find existing user by googleId or email
@@ -67,12 +67,7 @@ export default defineEventHandler(async (event) => {
     role: user.role
   })
 
-  setCookie(event, 'auth_token', token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    maxAge: 60 * 60 * 24 * 7
-  })
+  setAuthCookie(event, token)
 
   return {
     user: {

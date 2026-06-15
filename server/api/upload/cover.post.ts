@@ -7,12 +7,12 @@ export default defineEventHandler(async (event) => {
     const formData = await readMultipartFormData(event)
 
     if (!formData || formData.length === 0) {
-        throw createError({ statusCode: 400, statusMessage: 'ไม่พบไฟล์ที่อัปโหลด' })
+        throw createError({ statusCode: 400, message: 'ไม่พบไฟล์ที่อัปโหลด' })
     }
 
     const file = formData.find(f => f.name === 'cover')
     if (!file || !file.data) {
-        throw createError({ statusCode: 400, statusMessage: 'ไม่พบไฟล์ปกหนังสือ' })
+        throw createError({ statusCode: 400, message: 'ไม่พบไฟล์ปกหนังสือ' })
     }
 
     // Validate file type
@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     if (!file.type || !allowedTypes.includes(file.type)) {
         throw createError({
             statusCode: 400,
-            statusMessage: 'รองรับเฉพาะไฟล์ภาพ (JPEG, PNG, WebP, GIF)'
+            message: 'รองรับเฉพาะไฟล์ภาพ (JPEG, PNG, WebP, GIF)'
         })
     }
 
@@ -29,7 +29,7 @@ export default defineEventHandler(async (event) => {
     if (file.data.length > maxSize) {
         throw createError({
             statusCode: 400,
-            statusMessage: 'ขนาดไฟล์ต้องไม่เกิน 5MB'
+            message: 'ขนาดไฟล์ต้องไม่เกิน 5MB'
         })
     }
 

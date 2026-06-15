@@ -9,10 +9,10 @@ export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
 
   const order = await Order.findById(id)
-  if (!order) throw createError({ statusCode: 404, statusMessage: 'ไม่พบคำสั่งซื้อ' })
+  if (!order) throw createError({ statusCode: 404, message: 'ไม่พบคำสั่งซื้อ' })
 
   if (order.status !== 'paid') {
-    throw createError({ statusCode: 400, statusMessage: 'ไม่สามารถคืนเงินคำสั่งซื้อนี้ได้' })
+    throw createError({ statusCode: 400, message: 'ไม่สามารถคืนเงินคำสั่งซื้อนี้ได้' })
   }
 
   order.status = 'refunded'

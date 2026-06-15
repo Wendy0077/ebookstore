@@ -9,30 +9,33 @@ export default defineEventHandler(async (event) => {
   const { bookId, type } = body || {}
 
   if (!bookId) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุ bookId' })
+    throw createError({ statusCode: 400, message: 'กรุณาระบุ bookId' })
   }
 
   if (type !== 'purchase' && type !== 'rental') {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุ type ให้ถูกต้อง (purchase หรือ rental)' })
+    throw createError({ statusCode: 400, message: 'กรุณาระบุ type ให้ถูกต้อง (purchase หรือ rental)' })
   }
 
-  const cart = await Cart.findOne({ user: user.userId })
+  const [cart, book] = await Promise.all([
+    Cart.findOne({ user: user.userId }),
+    Book.findById(bookId)
+  ])
+
   if (!cart) {
-    throw createError({ statusCode: 404, statusMessage: 'ไม่พบตะกร้า' })
+    throw createError({ statusCode: 404, message: 'ไม่พบตะกร้า' })
   }
 
   const item = cart.items.find((i: any) => i.book.toString() === String(bookId))
   if (!item) {
-    throw createError({ statusCode: 404, statusMessage: 'ไม่พบหนังสือในตะกร้า' })
+    throw createError({ statusCode: 404, message: 'ไม่พบหนังสือในตะกร้า' })
   }
 
-  const book = await Book.findById(bookId)
   if (!book) {
-    throw createError({ statusCode: 404, statusMessage: 'ไม่พบหนังสือ' })
+    throw createError({ statusCode: 404, message: 'ไม่พบหนังสือ' })
   }
 
   if (type === 'rental' && (!book.isRentable || !book.rentalPrice || book.rentalPrice <= 0)) {
-    throw createError({ statusCode: 400, statusMessage: 'หนังสือเล่มนี้ไม่สามารถเช่าได้' })
+    throw createError({ statusCode: 400, message: 'หนังสือเล่มนี้ไม่สามารถเช่าได้' })
   }
 
   item.type = type

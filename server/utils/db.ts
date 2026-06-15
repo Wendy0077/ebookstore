@@ -1,21 +1,25 @@
 import mongoose from 'mongoose'
 
-let isConnected = false
+let connectionPromise: Promise<void> | null = null
 
 export async function connectDB() {
-  if (isConnected) return
+  if (mongoose.connection.readyState === 1) return
 
-  const config = useRuntimeConfig()
-  const uri = config.mongodbUri
+  if (!connectionPromise) {
+    const config = useRuntimeConfig()
+    const uri = config.mongodbUri
+    connectionPromise = mongoose.connect(uri).then(() => {
+      console.log('✅ MongoDB connected')
+    }).catch((error) => {
+      connectionPromise = null
+      console.error('❌ MongoDB connection error:', error)
+      throw error
+    })
 
-  try {
-    await mongoose.connect(uri)
-    isConnected = true
-    console.log('✅ MongoDB connected')
-  } catch (error) {
-    console.error('❌ MongoDB connection error:', error)
-    throw error
+    mongoose.connection.on('disconnected', () => {
+      connectionPromise = null
+    })
   }
-}
 
-export default connectDB
+  return connectionPromise
+}

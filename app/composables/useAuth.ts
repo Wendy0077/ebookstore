@@ -52,7 +52,7 @@ export const useAuth = () => {
     user.value = null
     token.value = ''
     sessionChecked.value = true
-    navigateTo('/')
+    navigateTo('/login')
   }
 
   const fetchUser = async () => {

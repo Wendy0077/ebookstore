@@ -7,9 +7,19 @@ export default defineEventHandler(async (event) => {
   const id = getRouterParam(event, 'id')
   const body = await readBody(event)
 
-  const book = await Book.findByIdAndUpdate(id, body, { new: true })
+  const allowed = [
+    'title', 'author', 'description', 'isbn', 'price', 'rentalPrice',
+    'rentalDurationDays', 'category', 'tags', 'coverImage', 'fileKey',
+    'pageCount', 'language', 'publisher', 'publishedYear',
+    'isActive', 'isFeatured', 'isRentable'
+  ]
+  const update = Object.fromEntries(
+    Object.entries(body).filter(([k]) => allowed.includes(k))
+  )
+
+  const book = await Book.findByIdAndUpdate(id, { $set: update }, { new: true })
   if (!book) {
-    throw createError({ statusCode: 404, statusMessage: 'ไม่พบหนังสือ' })
+    throw createError({ statusCode: 404, message: 'ไม่พบหนังสือ' })
   }
 
   return book

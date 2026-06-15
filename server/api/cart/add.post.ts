@@ -7,12 +7,12 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event)
 
   if (!body.bookId) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณาระบุ bookId' })
+    throw createError({ statusCode: 400, message: 'กรุณาระบุ bookId' })
   }
 
   const book = await Book.findById(body.bookId)
   if (!book) {
-    throw createError({ statusCode: 404, statusMessage: 'ไม่พบหนังสือ' })
+    throw createError({ statusCode: 404, message: 'ไม่พบหนังสือ' })
   }
 
   const type = body.type || 'purchase'
@@ -33,7 +33,7 @@ export default defineEventHandler(async (event) => {
   )
 
   if (existingItem) {
-    throw createError({ statusCode: 409, statusMessage: 'หนังสือนี้อยู่ในตะกร้าแล้ว' })
+    throw createError({ statusCode: 409, message: 'หนังสือนี้อยู่ในตะกร้าแล้ว' })
   }
 
   cart.items.push({

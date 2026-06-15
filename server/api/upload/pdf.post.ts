@@ -7,18 +7,18 @@ export default defineEventHandler(async (event) => {
     const formData = await readMultipartFormData(event)
 
     if (!formData || formData.length === 0) {
-        throw createError({ statusCode: 400, statusMessage: 'ไม่พบไฟล์ที่อัปโหลด' })
+        throw createError({ statusCode: 400, message: 'ไม่พบไฟล์ที่อัปโหลด' })
     }
 
     const file = formData.find(f => f.name === 'pdf')
     if (!file || !file.data) {
-        throw createError({ statusCode: 400, statusMessage: 'ไม่พบไฟล์ PDF' })
+        throw createError({ statusCode: 400, message: 'ไม่พบไฟล์ PDF' })
     }
 
     if (!file.type || file.type !== 'application/pdf') {
         throw createError({
             statusCode: 400,
-            statusMessage: 'รองรับเฉพาะไฟล์ PDF เท่านั้น'
+            message: 'รองรับเฉพาะไฟล์ PDF เท่านั้น'
         })
     }
 
@@ -26,7 +26,7 @@ export default defineEventHandler(async (event) => {
     if (file.data.length > maxSize) {
         throw createError({
             statusCode: 400,
-            statusMessage: 'ขนาดไฟล์ต้องไม่เกิน 50MB'
+            message: 'ขนาดไฟล์ต้องไม่เกิน 50MB'
         })
     }
 

@@ -39,19 +39,28 @@ export function getTokenFromEvent(event: H3Event): string | null {
 export function requireAuth(event: H3Event): TokenPayload {
   const token = getTokenFromEvent(event)
   if (!token) {
-    throw createError({ statusCode: 401, statusMessage: 'Unauthorized: No token provided' })
+    throw createError({ statusCode: 401, message: 'Unauthorized: No token provided' })
   }
   try {
     return verifyToken(token)
   } catch {
-    throw createError({ statusCode: 401, statusMessage: 'Unauthorized: Invalid token' })
+    throw createError({ statusCode: 401, message: 'Unauthorized: Invalid token' })
   }
 }
 
 export function requireAdmin(event: H3Event): TokenPayload {
   const user = requireAuth(event)
   if (user.role !== 'admin') {
-    throw createError({ statusCode: 403, statusMessage: 'Forbidden: Admin access required' })
+    throw createError({ statusCode: 403, message: 'Forbidden: Admin access required' })
   }
   return user
+}
+
+export function setAuthCookie(event: H3Event, token: string): void {
+  setCookie(event, 'auth_token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: 60 * 60 * 24 * 7
+  })
 }

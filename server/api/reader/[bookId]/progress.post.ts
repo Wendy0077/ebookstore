@@ -15,24 +15,25 @@ export default defineEventHandler(async (event) => {
     Book.findById(bookId).select('pageCount').lean() as Promise<any>
   ])
 
-  if (!ac) throw createError({ statusCode: 403, statusMessage: 'ไม่มีสิทธิ์เข้าถึง' })
+  if (!ac) throw createError({ statusCode: 403, message: 'ไม่มีสิทธิ์เข้าถึง' })
 
   // Use authoritative pageCount from DB; fall back to client value only if DB has none
   const totalPages = (book?.pageCount > 0 ? book.pageCount : parseInt(body.totalPages)) || 0
 
-  await AccessControl.updateOne({ _id: ac._id }, { lastReadPage: page })
-
-  await ReadingHistory.findOneAndUpdate(
-    { user: user.userId, book: bookId },
-    {
-      currentPage: page,
-      totalPages,
-      lastReadAt: new Date(),
-      completed: totalPages > 0 && page >= totalPages,
-      $inc: { readingTimeMinutes: body.minutesRead || 0 }
-    },
-    { upsert: true, new: true }
-  )
+  await Promise.all([
+    AccessControl.updateOne({ _id: ac._id }, { lastReadPage: page }),
+    ReadingHistory.findOneAndUpdate(
+      { user: user.userId, book: bookId },
+      {
+        currentPage: page,
+        totalPages,
+        lastReadAt: new Date(),
+        completed: totalPages > 0 && page >= totalPages,
+        $inc: { readingTimeMinutes: body.minutesRead || 0 }
+      },
+      { upsert: true, new: true }
+    )
+  ])
 
   return { ok: true, page, totalPages }
 })

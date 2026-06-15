@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event)
 
   if (!body.title || !body.author || !body.category || body.price === undefined) {
-    throw createError({ statusCode: 400, statusMessage: 'กรุณากรอกข้อมูลที่จำเป็น (title, author, category, price)' })
+    throw createError({ statusCode: 400, message: 'กรุณากรอกข้อมูลที่จำเป็น (title, author, category, price)' })
   }
 
   const book = await Book.create({

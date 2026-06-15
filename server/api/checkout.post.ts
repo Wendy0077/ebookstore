@@ -13,13 +13,13 @@ export default defineEventHandler(async (event) => {
     // Validate payment info (mock — just check fields exist)
     const { cardName, cardNumber, expiry, cvv } = body || {}
     if (!cardName || !cardNumber || !expiry || !cvv) {
-        throw createError({ statusCode: 400, statusMessage: 'กรุณากรอกข้อมูลบัตรให้ครบถ้วน' })
+        throw createError({ statusCode: 400, message: 'กรุณากรอกข้อมูลบัตรให้ครบถ้วน' })
     }
 
     // Get cart
     const cart = await Cart.findOne({ user: user.userId }).populate('items.book')
     if (!cart || !cart.items || cart.items.length === 0) {
-        throw createError({ statusCode: 400, statusMessage: 'ตะกร้าสินค้าว่างเปล่า' })
+        throw createError({ statusCode: 400, message: 'ตะกร้าสินค้าว่างเปล่า' })
     }
 
     // Calculate total

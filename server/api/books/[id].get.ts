@@ -5,7 +5,7 @@ export default defineEventHandler(async (event) => {
 
   const book = await Book.findById(id).lean()
   if (!book) {
-    throw createError({ statusCode: 404, statusMessage: 'ไม่พบหนังสือ' })
+    throw createError({ statusCode: 404, message: 'ไม่พบหนังสือ' })
   }
 
   return book
