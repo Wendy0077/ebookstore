@@ -8,7 +8,11 @@ export async function connectDB() {
   if (!connectionPromise) {
     const config = useRuntimeConfig()
     const uri = config.mongodbUri
-    connectionPromise = mongoose.connect(uri).then(() => {
+    connectionPromise = mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 10000,
+      maxPoolSize: 10
+    }).then(() => {
       console.log('✅ MongoDB connected')
     }).catch((error) => {
       connectionPromise = null
