@@ -40,7 +40,6 @@ export default defineNuxtConfig({
   },
 
   routeRules: {
-    '/': { prerender: true },
     // Cache static assets aggressively
     '/_nuxt/**': { headers: { 'cache-control': 'public, max-age=31536000, immutable' } },
     '/**': { headers: { 'Cross-Origin-Opener-Policy': 'same-origin-allow-popups' } }
