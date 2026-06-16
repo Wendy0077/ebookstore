@@ -27,7 +27,13 @@ export default defineEventHandler(async (event) => {
     const filename = `${randomUUID()}.${ext}`
     const key = `covers/${filename}`
 
-    await uploadToS3(key, file.data, file.type)
+    try {
+        await uploadToS3(key, file.data, file.type)
+    }
+    catch (err: any) {
+        console.error('[cover upload] S3 error:', err?.message, err?.Code, err?.$metadata)
+        throw createError({ statusCode: 500, message: `S3 error: ${err?.message || 'unknown'}` })
+    }
 
     return {
         url: `/api/covers/${filename}`,
