@@ -87,11 +87,20 @@ export default defineNuxtConfig({
   },
 
   icon: {
+    serverBundle: {
+      collections: ['lucide']
+    },
     clientBundle: {
       scan: {
         globInclude: ['app/**/*.vue'],
         globExclude: ['node_modules/**', '.nuxt/**', 'dist/**']
-      }
+      },
+      icons: [
+        'lucide:loader-2',
+        'lucide:bar-chart-2',
+        'lucide:trash-2',
+        'lucide:undo-2'
+      ]
     }
   }
 })
