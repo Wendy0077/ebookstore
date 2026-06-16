@@ -1,9 +1,8 @@
-import { readFile } from 'fs/promises'
-import { join } from 'path'
 import AccessControl from '../../../models/AccessControl'
 import Book from '../../../models/Book'
 import { requireAuth } from '../../../utils/auth'
 import { assertRentalNotExpired } from '../../../utils/access'
+import { getS3Object } from '../../../utils/s3'
 
 export default defineEventHandler(async (event) => {
   const user = requireAuth(event)
@@ -19,8 +18,13 @@ export default defineEventHandler(async (event) => {
 
   if (!book?.fileKey) throw createError({ statusCode: 404, message: 'ไม่พบไฟล์หนังสือ' })
 
-  const filePath = join(process.cwd(), 'public', book.fileKey)
-  const data = await readFile(filePath)
+  let data: Buffer
+  try {
+    data = await getS3Object(book.fileKey)
+  }
+  catch {
+    throw createError({ statusCode: 404, message: 'ไม่พบไฟล์หนังสือ' })
+  }
 
   setHeader(event, 'Content-Type', 'application/pdf')
   setHeader(event, 'Content-Disposition', 'inline; filename="book.pdf"')
