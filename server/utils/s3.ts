@@ -6,36 +6,41 @@ let s3Client: S3Client | null = null
 function getS3Client(): S3Client {
   if (s3Client) return s3Client
 
-  const config = useRuntimeConfig()
+  const region = process.env.S3_REGION || 'auto'
+  const accessKey = process.env.S3_ACCESS_KEY || ''
+  const secretKey = process.env.S3_SECRET_KEY || ''
+  const endpoint = process.env.S3_ENDPOINT || ''
 
   const clientConfig: any = {
-    region: config.s3Region || 'auto',
+    region,
     requestChecksumCalculation: 'WHEN_REQUIRED',
     responseChecksumValidation: 'WHEN_REQUIRED'
   }
 
-  if (config.s3AccessKey && config.s3SecretKey) {
+  if (accessKey && secretKey) {
     clientConfig.credentials = {
-      accessKeyId: config.s3AccessKey,
-      secretAccessKey: config.s3SecretKey
+      accessKeyId: accessKey,
+      secretAccessKey: secretKey
     }
   }
 
-  if (config.s3Endpoint) {
-    clientConfig.endpoint = config.s3Endpoint
+  if (endpoint) {
+    clientConfig.endpoint = endpoint
     clientConfig.forcePathStyle = true
   }
+
+  console.log('[S3] init client, endpoint:', endpoint || '(none)', 'region:', region)
 
   s3Client = new S3Client(clientConfig)
   return s3Client
 }
 
 export async function uploadToS3(key: string, body: Buffer | Uint8Array, contentType: string): Promise<string> {
-  const config = useRuntimeConfig()
+  const bucket = process.env.S3_BUCKET || useRuntimeConfig().s3Bucket
   const client = getS3Client()
 
   await client.send(new PutObjectCommand({
-    Bucket: config.s3Bucket,
+    Bucket: bucket,
     Key: key,
     Body: body,
     ContentType: contentType
@@ -45,11 +50,11 @@ export async function uploadToS3(key: string, body: Buffer | Uint8Array, content
 }
 
 export async function getS3SignedUrl(key: string, expiresIn = 3600): Promise<string> {
-  const config = useRuntimeConfig()
+  const bucket = process.env.S3_BUCKET || useRuntimeConfig().s3Bucket
   const client = getS3Client()
 
   const command = new GetObjectCommand({
-    Bucket: config.s3Bucket,
+    Bucket: bucket,
     Key: key
   })
 
@@ -57,11 +62,11 @@ export async function getS3SignedUrl(key: string, expiresIn = 3600): Promise<str
 }
 
 export async function getS3Object(key: string): Promise<Buffer> {
-  const config = useRuntimeConfig()
+  const bucket = process.env.S3_BUCKET || useRuntimeConfig().s3Bucket
   const client = getS3Client()
 
   const response = await client.send(new GetObjectCommand({
-    Bucket: config.s3Bucket,
+    Bucket: bucket,
     Key: key
   }))
 
@@ -74,11 +79,11 @@ export async function getS3Object(key: string): Promise<Buffer> {
 }
 
 export async function deleteFromS3(key: string): Promise<void> {
-  const config = useRuntimeConfig()
+  const bucket = process.env.S3_BUCKET || useRuntimeConfig().s3Bucket
   const client = getS3Client()
 
   await client.send(new DeleteObjectCommand({
-    Bucket: config.s3Bucket,
+    Bucket: bucket,
     Key: key
   }))
 }
