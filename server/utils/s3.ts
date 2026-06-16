@@ -9,7 +9,9 @@ function getS3Client(): S3Client {
   const config = useRuntimeConfig()
 
   const clientConfig: any = {
-    region: config.s3Region
+    region: config.s3Region || 'auto',
+    requestChecksumCalculation: 'WHEN_REQUIRED',
+    responseChecksumValidation: 'WHEN_REQUIRED'
   }
 
   if (config.s3AccessKey && config.s3SecretKey) {
