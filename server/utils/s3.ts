@@ -6,10 +6,9 @@ let s3Client: S3Client | null = null
 function getS3Client(): S3Client {
   if (s3Client) return s3Client
 
-  const region = process.env.S3_REGION || 'auto'
-  const accessKey = process.env.S3_ACCESS_KEY || ''
-  const secretKey = process.env.S3_SECRET_KEY || ''
-  const endpoint = process.env.S3_ENDPOINT || ''
+  const config = useRuntimeConfig()
+  const endpoint = config.s3Endpoint || ''
+  const region = config.s3Region || 'auto'
 
   const clientConfig: any = {
     region,
@@ -17,10 +16,10 @@ function getS3Client(): S3Client {
     responseChecksumValidation: 'WHEN_REQUIRED'
   }
 
-  if (accessKey && secretKey) {
+  if (config.s3AccessKey && config.s3SecretKey) {
     clientConfig.credentials = {
-      accessKeyId: accessKey,
-      secretAccessKey: secretKey
+      accessKeyId: config.s3AccessKey,
+      secretAccessKey: config.s3SecretKey
     }
   }
 
@@ -29,14 +28,14 @@ function getS3Client(): S3Client {
     clientConfig.forcePathStyle = true
   }
 
-  console.log('[S3] init client, endpoint:', endpoint || '(none)', 'region:', region)
+  console.log('[S3] init endpoint:', endpoint || '(none)')
 
   s3Client = new S3Client(clientConfig)
   return s3Client
 }
 
 export async function uploadToS3(key: string, body: Buffer | Uint8Array, contentType: string): Promise<string> {
-  const bucket = process.env.S3_BUCKET || useRuntimeConfig().s3Bucket
+  const bucket = useRuntimeConfig().s3Bucket
   const client = getS3Client()
 
   await client.send(new PutObjectCommand({
@@ -50,7 +49,7 @@ export async function uploadToS3(key: string, body: Buffer | Uint8Array, content
 }
 
 export async function getS3SignedUrl(key: string, expiresIn = 3600): Promise<string> {
-  const bucket = process.env.S3_BUCKET || useRuntimeConfig().s3Bucket
+  const bucket = useRuntimeConfig().s3Bucket
   const client = getS3Client()
 
   const command = new GetObjectCommand({
@@ -62,7 +61,7 @@ export async function getS3SignedUrl(key: string, expiresIn = 3600): Promise<str
 }
 
 export async function getS3Object(key: string): Promise<Buffer> {
-  const bucket = process.env.S3_BUCKET || useRuntimeConfig().s3Bucket
+  const bucket = useRuntimeConfig().s3Bucket
   const client = getS3Client()
 
   const response = await client.send(new GetObjectCommand({
@@ -79,7 +78,7 @@ export async function getS3Object(key: string): Promise<Buffer> {
 }
 
 export async function deleteFromS3(key: string): Promise<void> {
-  const bucket = process.env.S3_BUCKET || useRuntimeConfig().s3Bucket
+  const bucket = useRuntimeConfig().s3Bucket
   const client = getS3Client()
 
   await client.send(new DeleteObjectCommand({
