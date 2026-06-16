@@ -27,5 +27,6 @@ logs
 .env.*
 !.env.example
 
-# Uploaded files
-public/uploads
+# Uploaded files (allow existing covers to be served via Vercel static)
+public/uploads/books
+!public/uploads/covers
