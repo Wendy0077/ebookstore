@@ -45,7 +45,7 @@ const accessControlSchema = new mongoose.Schema({
 })
 
 accessControlSchema.index({ user: 1, book: 1 })
-accessControlSchema.index({ user: 1, accessType: 1 })
+accessControlSchema.index({ user: 1, isActive: 1 })
 accessControlSchema.index({ rentalExpireAt: 1 })
 
 export const AccessControl = (mongoose.models.AccessControl || mongoose.model('AccessControl', accessControlSchema)) as mongoose.Model<any>
