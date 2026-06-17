@@ -2,7 +2,7 @@ import AccessControl from '../../../models/AccessControl'
 import Book from '../../../models/Book'
 import { requireAuth } from '../../../utils/auth'
 import { assertRentalNotExpired } from '../../../utils/access'
-import { getS3Object } from '../../../utils/s3'
+import { getS3ObjectStream } from '../../../utils/s3'
 
 export default defineEventHandler(async (event) => {
   const user = requireAuth(event)
@@ -21,9 +21,13 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, message: 'ไม่พบไฟล์หนังสือ' })
   }
 
-  let data: Buffer
+  // Pass the client's Range header through to R2 so pdf.js can fetch only the
+  // byte ranges it needs instead of downloading the entire file up front.
+  const range = getHeader(event, 'range')
+
+  let result
   try {
-    data = await getS3Object(book.fileKey)
+    result = await getS3ObjectStream(book.fileKey, range)
   }
   catch (err: any) {
     console.error(`[reader/file] S3 error for key "${book.fileKey}":`, err?.message, err?.Code, err?.$metadata)
@@ -34,6 +38,13 @@ export default defineEventHandler(async (event) => {
   setHeader(event, 'Content-Disposition', 'inline; filename="book.pdf"')
   setHeader(event, 'Cache-Control', 'private, no-store')
   setHeader(event, 'X-Content-Type-Options', 'nosniff')
+  setHeader(event, 'Accept-Ranges', 'bytes')
+  if (result.contentLength != null) setHeader(event, 'Content-Length', result.contentLength)
 
-  return data
+  if (result.contentRange) {
+    setHeader(event, 'Content-Range', result.contentRange)
+    setResponseStatus(event, 206)
+  }
+
+  return sendStream(event, result.body)
 })
