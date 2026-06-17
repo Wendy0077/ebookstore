@@ -1,3 +1,4 @@
+import type { Readable } from 'node:stream'
 import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3'
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
 
@@ -81,6 +82,31 @@ export async function getS3Object(key: string): Promise<Buffer> {
     chunks.push(chunk)
   }
   return Buffer.concat(chunks)
+}
+
+export interface S3StreamResult {
+  body: Readable
+  contentLength?: number
+  contentRange?: string
+  acceptRanges?: string
+}
+
+export async function getS3ObjectStream(key: string, range?: string): Promise<S3StreamResult> {
+  const bucket = useRuntimeConfig().s3Bucket
+  const client = getS3Client()
+
+  const response = await client.send(new GetObjectCommand({
+    Bucket: bucket,
+    Key: key.replace(/^\/+/, ''),
+    Range: range
+  }))
+
+  return {
+    body: response.Body as Readable,
+    contentLength: response.ContentLength,
+    contentRange: response.ContentRange,
+    acceptRanges: response.AcceptRanges
+  }
 }
 
 export async function deleteFromS3(key: string): Promise<void> {
