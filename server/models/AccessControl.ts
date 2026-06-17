@@ -29,6 +29,10 @@ const accessControlSchema = new mongoose.Schema({
     type: Date,
     default: null
   },
+  expiryNotifiedAt: {
+    type: Date,
+    default: null
+  },
   lastReadPage: {
     type: Number,
     default: 0

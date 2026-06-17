@@ -1,7 +1,10 @@
 <script setup lang="ts">
 const { fetchUser, isLoggedIn, user, logout } = useAuth()
 const { fetchCart, itemCount } = useCart()
+const { notifications, unreadCount, fetchNotifications, markAsRead, markAllAsRead } = useNotifications()
 const route = useRoute()
+
+let notificationsInterval: ReturnType<typeof setInterval> | undefined
 
 const title = 'BookVerse — ร้านหนังสือออนไลน์'
 const description = 'ค้นหา ซื้อ และเช่าหนังสือออนไลน์ ดาวน์โหลดได้ทันที พร้อมระบบแนะนำหนังสือที่ตรงใจ'
@@ -34,8 +37,16 @@ useSeoMeta({
 onMounted(() => {
   // Run auth + cart fetch in parallel, don't block render
   fetchUser().then(() => {
-    if (isLoggedIn.value) fetchCart()
+    if (isLoggedIn.value) {
+      fetchCart()
+      fetchNotifications()
+      notificationsInterval = setInterval(fetchNotifications, 2 * 60 * 1000)
+    }
   })
+})
+
+onUnmounted(() => {
+  if (notificationsInterval) clearInterval(notificationsInterval)
 })
 
 const navLinks = [
@@ -69,6 +80,29 @@ const navLinks = [
         <!-- Cart Button -->
         <UButton v-if="isLoggedIn" to="/cart" icon="i-lucide-shopping-cart" color="neutral" variant="ghost"
           :badge="itemCount > 0 ? itemCount : undefined" aria-label="ตะกร้า" />
+
+        <!-- Notifications -->
+        <UPopover v-if="isLoggedIn" :content="{ side: 'bottom', align: 'end' }">
+          <UButton icon="i-lucide-bell" color="neutral" variant="ghost"
+            :badge="unreadCount > 0 ? unreadCount : undefined" aria-label="การแจ้งเตือน" />
+
+          <template #content>
+            <div class="w-80 max-h-96 overflow-y-auto p-2">
+              <div class="flex items-center justify-between px-2 py-1.5">
+                <span class="text-sm font-semibold">การแจ้งเตือน</span>
+                <UButton v-if="unreadCount > 0" label="อ่านทั้งหมด" size="xs" variant="link" color="neutral"
+                  @click="markAllAsRead" />
+              </div>
+              <p v-if="notifications.length === 0" class="text-sm text-gray-400 text-center py-6">ไม่มีการแจ้งเตือน</p>
+              <button v-for="n in notifications" :key="n._id" type="button"
+                class="w-full text-left px-2 py-2 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+                :class="{ 'bg-indigo-50 dark:bg-indigo-950/40': !n.isRead }" @click="markAsRead(n._id)">
+                <p class="text-sm font-medium">{{ n.title }}</p>
+                <p class="text-xs text-gray-500 mt-0.5">{{ n.message }}</p>
+              </button>
+            </div>
+          </template>
+        </UPopover>
 
         <!-- User Menu -->
         <template v-if="isLoggedIn">
