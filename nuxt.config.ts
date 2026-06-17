@@ -17,7 +17,7 @@ export default defineNuxtConfig({
     jwtSecret: process.env.JWT_SECRET || 'super-secret-jwt-key-change-in-production',
     stripeSecretKey: process.env.STRIPE_SECRET_KEY || '',
     stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET || '',
-    s3Region: process.env.S3_REGION || 'ap-southeast-1',
+    s3Region: process.env.S3_REGION || 'auto',
     s3Bucket: process.env.S3_BUCKET || 'bookstore-files',
     s3AccessKey: process.env.S3_ACCESS_KEY || '',
     s3SecretKey: process.env.S3_SECRET_KEY || '',

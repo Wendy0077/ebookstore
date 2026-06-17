@@ -16,13 +16,17 @@ export default defineEventHandler(async (event) => {
 
   await assertRentalNotExpired(ac)
 
-  if (!book?.fileKey) throw createError({ statusCode: 404, message: 'ไม่พบไฟล์หนังสือ' })
+  if (!book?.fileKey) {
+    console.error(`[reader/file] book ${bookId} has no fileKey`)
+    throw createError({ statusCode: 404, message: 'ไม่พบไฟล์หนังสือ' })
+  }
 
   let data: Buffer
   try {
     data = await getS3Object(book.fileKey)
   }
-  catch {
+  catch (err: any) {
+    console.error(`[reader/file] S3 error for key "${book.fileKey}":`, err?.message, err?.Code, err?.$metadata)
     throw createError({ statusCode: 404, message: 'ไม่พบไฟล์หนังสือ' })
   }
 
