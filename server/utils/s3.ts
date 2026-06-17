@@ -28,7 +28,13 @@ function getS3Client(): S3Client {
     clientConfig.forcePathStyle = true
   }
 
-  console.log('[S3] init endpoint:', endpoint || '(none)')
+  console.log('[S3] init:', {
+    endpoint: endpoint || '(none)',
+    region,
+    bucket: config.s3Bucket || '(none)',
+    hasAccessKey: !!config.s3AccessKey,
+    hasSecretKey: !!config.s3SecretKey
+  })
 
   s3Client = new S3Client(clientConfig)
   return s3Client
@@ -40,7 +46,7 @@ export async function uploadToS3(key: string, body: Buffer | Uint8Array, content
 
   await client.send(new PutObjectCommand({
     Bucket: bucket,
-    Key: key,
+    Key: key.replace(/^\/+/, ''),
     Body: body,
     ContentType: contentType
   }))
@@ -66,7 +72,7 @@ export async function getS3Object(key: string): Promise<Buffer> {
 
   const response = await client.send(new GetObjectCommand({
     Bucket: bucket,
-    Key: key
+    Key: key.replace(/^\/+/, '')
   }))
 
   const chunks: Uint8Array[] = []
@@ -83,6 +89,6 @@ export async function deleteFromS3(key: string): Promise<void> {
 
   await client.send(new DeleteObjectCommand({
     Bucket: bucket,
-    Key: key
+    Key: key.replace(/^\/+/, '')
   }))
 }
