@@ -1,4 +1,3 @@
-import SVM from 'ml-svm'
 import Book from '../models/Book'
 import Order from '../models/Order'
 import Rental from '../models/Rental'
@@ -51,9 +50,50 @@ function shuffle<T>(arr: T[]): T[] {
   const copy = [...arr]
   for (let i = copy.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
-    ;[copy[i], copy[j]] = [copy[j], copy[i]]
+    const tmp = copy[i]
+    copy[i] = copy[j]
+    copy[j] = tmp
   }
   return copy
+}
+
+interface LinearSVM {
+  weights: number[]
+  bias: number
+}
+
+// Soft-margin linear SVM trained with the Pegasos stochastic sub-gradient algorithm
+function trainLinearSVM(features: number[][], labels: number[], lambda = 0.01, epochs = 200): LinearSVM {
+  const dim = features[0].length
+  const weights = new Array(dim).fill(0)
+  let bias = 0
+  let t = 0
+
+  for (let epoch = 0; epoch < epochs; epoch++) {
+    for (let i = 0; i < features.length; i++) {
+      t++
+      const eta = 1 / (lambda * t)
+      const x = features[i]
+      const y = labels[i]
+      let dot = bias
+      for (let d = 0; d < dim; d++) dot += weights[d] * x[d]
+
+      if (y * dot < 1) {
+        for (let d = 0; d < dim; d++) weights[d] = (1 - eta * lambda) * weights[d] + eta * y * x[d]
+        bias += eta * y
+      } else {
+        for (let d = 0; d < dim; d++) weights[d] = (1 - eta * lambda) * weights[d]
+      }
+    }
+  }
+
+  return { weights, bias }
+}
+
+function svmMargin(model: LinearSVM, x: number[]): number {
+  let dot = model.bias
+  for (let d = 0; d < x.length; d++) dot += model.weights[d] * x[d]
+  return dot
 }
 
 async function collectUserPositives(): Promise<Map<string, Set<string>>> {
@@ -126,17 +166,16 @@ export async function trainAllRecommendations() {
       ...negativeSample.map(() => -1)
     ]
 
-    let svm: any
+    let model: LinearSVM
     try {
-      svm = new SVM({ C: 1, tol: 1e-4, maxPasses: 20, maxIterations: 10000, kernel: 'linear' })
-      svm.train(features, labels)
+      model = trainLinearSVM(features, labels)
     } catch {
       usersSkipped++
       continue
     }
 
     const candidates = books.filter((b: any) => !positiveSet.has(b._id.toString()))
-    const margins = svm.margin(candidates.map((b: any) => featurize(b, vocab)))
+    const margins = candidates.map((b: any) => svmMargin(model, featurize(b, vocab)))
 
     const ranked = candidates
       .map((b: any, i: number) => ({ book: b._id, score: margins[i] }))
