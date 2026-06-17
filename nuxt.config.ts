@@ -23,6 +23,7 @@ export default defineNuxtConfig({
     s3SecretKey: process.env.S3_SECRET_KEY || '',
     s3Endpoint: process.env.S3_ENDPOINT || '',
     googleClientId: process.env.GOOGLE_CLIENT_ID || '',
+    cronSecret: process.env.CRON_SECRET || '',
     // Client-exposed keys
     public: {
       appName: 'BookVerse',

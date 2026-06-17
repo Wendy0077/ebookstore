@@ -1,4 +1,10 @@
 {
   "buildCommand": "nuxt build",
-  "framework": null
+  "framework": null,
+  "crons": [
+    {
+      "path": "/api/cron/train-recommendations",
+      "schedule": "0 20 * * *"
+    }
+  ]
 }
