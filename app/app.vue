@@ -191,16 +191,6 @@ const navLinks = [
         </NuxtLink>
 
         <NuxtLink
-          v-if="isLoggedIn"
-          to="/dashboard"
-          class="flex flex-col items-center gap-0.5 px-4 py-1 transition-colors"
-          :class="route.path.startsWith('/dashboard') || route.path.startsWith('/admin') ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 dark:text-gray-500'"
-        >
-          <UIcon name="i-lucide-user-circle" class="w-5 h-5" />
-          <span class="text-[10px] font-medium">ฉัน</span>
-        </NuxtLink>
-
-        <NuxtLink
           v-if="!isLoggedIn"
           to="/books"
           class="flex flex-col items-center gap-0.5 px-4 py-1 transition-colors"
