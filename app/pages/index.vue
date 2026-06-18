@@ -146,7 +146,7 @@ const renderStars = (rating: number) => {
             >
               <template #default="{ item }">
                 <NuxtLink :to="`/books/${item._id}`" class="block px-3 group">
-                  <div class="aspect-[3/4] w-44 rounded-xl overflow-hidden shadow-xl ring-1 ring-white/10">
+                  <div class="aspect-[3/4] w-56 rounded-xl overflow-hidden shadow-xl ring-1 ring-white/10">
                     <img
                       :src="item.coverImage"
                       :alt="item.title"
