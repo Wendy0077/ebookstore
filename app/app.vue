@@ -58,7 +58,7 @@ const navLinks = [
 
 <template>
   <UApp>
-    <UHeader v-if="!route.path.startsWith('/read/')" >
+    <UHeader v-if="!route.path.startsWith('/read/')" :toggle="false">
       <template #left>
         <NuxtLink to="/" class="flex items-center gap-2 group">
           <div
