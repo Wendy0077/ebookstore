@@ -175,7 +175,7 @@ onMounted(async () => {
                 </div>
 
                 <div class="flex gap-3">
-                    <UButton to="/orders" label="ดูคำสั่งซื้อ" icon="i-lucide-package" color="primary" size="lg" />
+                    <UButton to="/library" label="ไปคลังหนังสือ" icon="i-lucide-library" color="primary" size="lg" />
                     <UButton to="/" label="กลับหน้าหลัก" icon="i-lucide-home" variant="outline" color="neutral"
                         size="lg" />
                 </div>
