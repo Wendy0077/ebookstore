@@ -131,7 +131,11 @@ onMounted(async () => {
   // Load PDF document client-side after access verified
   if (bookData.value?.fileKey) {
     const { usePDF } = await import('@tato30/vue-pdf')
-    const { pdf, pages } = usePDF(`/api/reader/${bookId}/file`)
+    // disableRange: avoid pdf.js splitting the fetch into many small
+    // (default 64KB) Range requests — on serverless each one pays a
+    // fresh round-trip to the R2 origin, which is slower than one
+    // single streamed download for these book-sized files.
+    const { pdf, pages } = usePDF({ url: `/api/reader/${bookId}/file`, disableRange: true })
     watch(pdf, (doc) => { pdfDoc.value = doc }, { immediate: true })
     watch(pages, (p) => { if (p > 0) pdfLoading.value = false }, { immediate: true })
   }
