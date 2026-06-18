@@ -84,6 +84,10 @@ const featuredBooks = computed(() =>
   books.value.filter(b => b.isFeatured).slice(0, 5)
 )
 
+const carouselBooks = computed(() =>
+  books.value.filter(b => b.coverImage).slice(0, 10)
+)
+
 onMounted(() => {
   // Run independent fetches in parallel instead of one-after-another —
   // each is a separate DB round-trip, so awaiting them sequentially was
@@ -130,24 +134,28 @@ const renderStars = (rating: number) => {
             </div>
           </div>
 
-          <!-- Stats Cards — hidden on mobile to reduce scroll -->
-          <div class="hidden md:grid grid-cols-2 gap-4 animate-fade-in-up" style="animation-delay: 0.2s">
-            <div class="glass rounded-2xl p-6 text-center">
-              <div class="text-3xl font-bold text-indigo-400 mb-1">1,000+</div>
-              <div class="text-sm text-gray-300">หนังสือ</div>
-            </div>
-            <div class="glass rounded-2xl p-6 text-center">
-              <div class="text-3xl font-bold text-purple-400 mb-1">5,000+</div>
-              <div class="text-sm text-gray-300">สมาชิก</div>
-            </div>
-            <div class="glass rounded-2xl p-6 text-center">
-              <div class="text-3xl font-bold text-pink-400 mb-1">4.8</div>
-              <div class="text-sm text-gray-300">คะแนนเฉลี่ย</div>
-            </div>
-            <div class="glass rounded-2xl p-6 text-center">
-              <div class="text-3xl font-bold text-emerald-400 mb-1">24/7</div>
-              <div class="text-sm text-gray-300">พร้อมให้บริการ</div>
-            </div>
+          <!-- Book Cover Carousel — hidden on mobile to reduce scroll -->
+          <div class="hidden md:block animate-fade-in-up" style="animation-delay: 0.2s">
+            <UCarousel
+              v-if="carouselBooks.length > 0"
+              :items="carouselBooks"
+              loop
+              :auto-scroll="{ speed: 1, stopOnInteraction: false }"
+              class="w-full"
+              :ui="{ item: 'basis-auto' }"
+            >
+              <template #default="{ item }">
+                <NuxtLink :to="`/books/${item._id}`" class="block px-2 group">
+                  <div class="aspect-[3/4] w-32 rounded-xl overflow-hidden shadow-xl ring-1 ring-white/10">
+                    <img
+                      :src="item.coverImage"
+                      :alt="item.title"
+                      class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    />
+                  </div>
+                </NuxtLink>
+              </template>
+            </UCarousel>
           </div>
         </div>
       </div>
