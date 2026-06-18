@@ -81,7 +81,7 @@ watch(currentPage, loadBooks)
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="max-w-[96rem] mx-auto px-4 py-8">
     <!-- Page Header -->
     <div class="mb-8">
       <h1 class="text-3xl font-bold mb-2">หนังสือทั้งหมด</h1>
