@@ -31,7 +31,7 @@ const handleRemove = async (bookId: string) => {
     await toggleWishlist(bookId)
     toast.add({ title: 'นำออกจากรายการที่บันทึกแล้ว', color: 'neutral' })
   } catch (err: any) {
-    toast.add({ title: err.data?.statusMessage || 'เกิดข้อผิดพลาด', color: 'error' })
+    toast.add({ title: err.data?.message || 'เกิดข้อผิดพลาด', color: 'error' })
   }
 }
 
@@ -40,7 +40,7 @@ const handleAddToCart = async (bookId: string) => {
     await addToCart(bookId)
     toast.add({ title: 'เพิ่มลงตะกร้าเรียบร้อย', icon: 'i-lucide-check-circle', color: 'success' })
   } catch (err: any) {
-    toast.add({ title: err.data?.statusMessage || 'เกิดข้อผิดพลาด', color: 'error' })
+    toast.add({ title: err.data?.message || 'เกิดข้อผิดพลาด', color: 'error' })
   }
 }
 

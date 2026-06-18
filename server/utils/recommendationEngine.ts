@@ -6,7 +6,7 @@ import ReadingHistory from '../models/ReadingHistory'
 import Recommendation from '../models/Recommendation'
 
 const MAX_TAGS = 15
-const MIN_POSITIVES = 3
+const MIN_POSITIVES = 2
 const TOP_N = 12
 
 interface Vocab {

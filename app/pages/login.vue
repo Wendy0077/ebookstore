@@ -24,7 +24,7 @@ const handleLogin = async () => {
     toast.add({ title: 'เข้าสู่ระบบเรียบร้อย', icon: 'i-lucide-check-circle', color: 'success' })
     navigateTo('/')
   } catch (err: any) {
-    toast.add({ title: err.data?.statusMessage || 'เกิดข้อผิดพลาด', color: 'error' })
+    toast.add({ title: err.data?.message || 'เกิดข้อผิดพลาด', color: 'error' })
   } finally {
     loading.value = false
   }
@@ -38,7 +38,7 @@ const handleGoogleCallback = async (response: { credential: string }) => {
     toast.add({ title: 'เข้าสู่ระบบด้วย Google เรียบร้อย', icon: 'i-lucide-check-circle', color: 'success' })
     navigateTo('/')
   } catch (err: any) {
-    toast.add({ title: err.data?.statusMessage || 'เกิดข้อผิดพลาด', color: 'error' })
+    toast.add({ title: err.data?.message || 'เกิดข้อผิดพลาด', color: 'error' })
   } finally {
     loading.value = false
   }

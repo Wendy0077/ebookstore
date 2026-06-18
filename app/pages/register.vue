@@ -31,7 +31,7 @@ const handleRegister = async () => {
     toast.add({ title: 'สมัครสมาชิกเรียบร้อย', icon: 'i-lucide-check-circle', color: 'success' })
     navigateTo('/')
   } catch (err: any) {
-    toast.add({ title: err.data?.statusMessage || 'เกิดข้อผิดพลาด', color: 'error' })
+    toast.add({ title: err.data?.message || 'เกิดข้อผิดพลาด', color: 'error' })
   } finally {
     loading.value = false
   }

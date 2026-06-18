@@ -29,7 +29,7 @@ const handleToggleWishlist = async (bookId: string) => {
     const res = await toggleWishlist(bookId)
     toast.add({ title: res.liked ? 'บันทึกไว้แล้ว' : 'นำออกจากรายการที่บันทึกแล้ว', color: 'neutral' })
   } catch (err: any) {
-    toast.add({ title: err.data?.statusMessage || 'เกิดข้อผิดพลาด', color: 'error' })
+    toast.add({ title: err.data?.message || 'เกิดข้อผิดพลาด', color: 'error' })
   }
 }
 
@@ -76,7 +76,7 @@ const handleAddToCart = async (bookId: string) => {
     const label = type === 'rental' ? 'เพิ่ม (เช่า) ลงตะกร้าเรียบร้อย' : 'เพิ่ม (ซื้อ) ลงตะกร้าเรียบร้อย'
     toast.add({ title: label, icon: 'i-lucide-check-circle', color: 'success' })
   } catch (err: any) {
-    toast.add({ title: err.data?.statusMessage || 'เกิดข้อผิดพลาด', icon: 'i-lucide-alert-circle', color: 'error' })
+    toast.add({ title: err.data?.message || 'เกิดข้อผิดพลาด', icon: 'i-lucide-alert-circle', color: 'error' })
   }
 }
 

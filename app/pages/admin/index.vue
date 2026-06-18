@@ -217,7 +217,7 @@ const saveBook = async () => {
     pdfFileName.value = ''
     await fetchBooks()
   } catch (err: any) {
-    toast.add({ title: err.data?.statusMessage || 'เกิดข้อผิดพลาด', color: 'error' })
+    toast.add({ title: err.data?.message || 'เกิดข้อผิดพลาด', color: 'error' })
   } finally {
     saving.value = false
     uploadingCover.value = false
@@ -235,7 +235,7 @@ const deleteBook = async () => {
     deleteTarget.value = null
     await fetchBooks()
   } catch (err: any) {
-    toast.add({ title: err.data?.statusMessage || 'ลบไม่สำเร็จ', color: 'error' })
+    toast.add({ title: err.data?.message || 'ลบไม่สำเร็จ', color: 'error' })
   } finally {
     deletingId.value = null
   }
