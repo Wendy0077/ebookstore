@@ -3,6 +3,8 @@
 
 :root {
   --font-sans: 'Inter', 'Noto Sans Thai', system-ui, -apple-system, sans-serif;
+  /* Widen Nuxt UI's default container (80rem) to match the wider homepage sections */
+  --ui-container: 96rem;
 }
 
 body {
