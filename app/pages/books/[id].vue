@@ -166,7 +166,7 @@ watch(() => book.value, (b) => {
           <div class="max-w-[200px] sm:max-w-xs lg:max-w-none mx-auto">
             <div
               class="aspect-[3/4] rounded-2xl bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-950 dark:to-purple-950 flex items-center justify-center shadow-xl overflow-hidden">
-              <img v-if="hasCover(book)" :src="book.coverImage" :alt="book.title" class="w-full h-full object-cover"
+              <img v-if="hasCover(book)" :src="book.coverImage" :alt="book.title" class="w-full h-full object-contain"
                 @error="onCoverError(book._id)" />
               <UIcon v-else name="i-lucide-book-open" class="w-24 h-24 text-indigo-300 dark:text-indigo-700" />
             </div>

@@ -88,7 +88,7 @@ onMounted(fetchLibrary)
             v-if="hasCover(book)"
             :src="book.coverImage"
             :alt="book.title"
-            class="w-full h-full object-cover"
+            class="w-full h-full object-contain"
             @error="coverErrorMap[book._id] = true"
           />
           <UIcon v-else name="i-lucide-book-open" class="w-8 h-8 sm:w-16 sm:h-16 text-indigo-300 dark:text-indigo-700" />
