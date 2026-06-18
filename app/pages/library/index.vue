@@ -44,6 +44,10 @@ const progressPercent = (h: any) => {
 const coverErrorMap = ref<Record<string, boolean>>({})
 const hasCover = (b: any) => !!b?.coverImage && !coverErrorMap.value[b._id]
 
+const openReader = (book: any) => {
+  if (book._status !== 'expired') navigateTo(`/read/${book._id}`)
+}
+
 onMounted(fetchLibrary)
 </script>
 
@@ -75,6 +79,8 @@ onMounted(fetchLibrary)
         v-for="book in allBooks"
         :key="book._id"
         class="flex sm:block bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+        :class="{ 'cursor-pointer': book._status !== 'expired' }"
+        @click="openReader(book)"
       >
         <!-- Cover -->
         <div class="w-24 shrink-0 sm:w-full sm:aspect-[3/4] relative bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-950 dark:to-purple-950 flex items-center justify-center overflow-hidden">
@@ -142,6 +148,7 @@ onMounted(fetchLibrary)
               color="primary"
               size="sm"
               class="flex-1"
+              @click.stop
             />
             <UButton
               :to="`/books/${book._id}`"
@@ -149,6 +156,7 @@ onMounted(fetchLibrary)
               variant="soft"
               color="neutral"
               size="sm"
+              @click.stop
             />
           </div>
         </div>
