@@ -8,7 +8,6 @@ const purchased = ref<any[]>([])
 const rented = ref<any[]>([])
 const expired = ref<any[]>([])
 const loading = ref(true)
-const activeTab = ref('purchased')
 
 const fetchLibrary = async () => {
   loading.value = true
@@ -24,17 +23,11 @@ const fetchLibrary = async () => {
   }
 }
 
-const tabItems = computed(() => [
-  { label: `ซื้อแล้ว (${purchased.value.length})`, value: 'purchased' },
-  { label: `เช่าอยู่ (${rented.value.length})`, value: 'rented' },
-  { label: `หมดอายุ (${expired.value.length})`, value: 'expired' }
+const allBooks = computed(() => [
+  ...purchased.value.map(b => ({ ...b, _status: 'purchased' })),
+  ...rented.value.map(b => ({ ...b, _status: 'rented' })),
+  ...expired.value.map(b => ({ ...b, _status: 'expired' }))
 ])
-
-const currentBooks = computed(() => {
-  if (activeTab.value === 'purchased') return purchased.value
-  if (activeTab.value === 'rented') return rented.value
-  return expired.value
-})
 
 const formatDate = (d: string) => new Date(d).toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric' })
 
@@ -67,34 +60,19 @@ onMounted(fetchLibrary)
       <UButton icon="i-lucide-refresh-cw" variant="soft" color="neutral" :loading="loading" @click="fetchLibrary" />
     </div>
 
-    <!-- Tabs -->
-    <div class="flex gap-2 mb-8 border-b border-gray-200 dark:border-gray-800">
-      <button
-        v-for="tab in tabItems"
-        :key="tab.value"
-        class="px-4 py-2.5 text-sm font-semibold transition-all border-b-2 -mb-px"
-        :class="activeTab === tab.value
-          ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
-          : 'border-transparent text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'"
-        @click="activeTab = tab.value"
-      >
-        {{ tab.label }}
-      </button>
-    </div>
-
     <div v-if="loading" class="flex justify-center py-20">
       <UIcon name="i-lucide-loader-2" class="w-8 h-8 animate-spin text-indigo-500" />
     </div>
 
-    <div v-else-if="currentBooks.length === 0" class="text-center py-20">
+    <div v-else-if="allBooks.length === 0" class="text-center py-20">
       <UIcon name="i-lucide-book-open" class="w-16 h-16 text-gray-200 dark:text-gray-700 mx-auto mb-4" />
-      <p class="text-gray-500 text-lg mb-2">ไม่มีหนังสือในหมวดนี้</p>
+      <p class="text-gray-500 text-lg mb-2">ยังไม่มีหนังสือในคลัง</p>
       <UButton to="/books" label="สำรวจหนังสือ" icon="i-lucide-compass" color="primary" class="mt-2" />
     </div>
 
     <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-6">
       <div
-        v-for="book in currentBooks"
+        v-for="book in allBooks"
         :key="book._id"
         class="flex sm:block bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
       >
@@ -121,7 +99,7 @@ onMounted(fetchLibrary)
           </div>
 
           <!-- Expired overlay -->
-          <div v-if="activeTab === 'expired'" class="absolute inset-0 bg-black/50 flex items-center justify-center">
+          <div v-if="book._status === 'expired'" class="absolute inset-0 bg-black/50 flex items-center justify-center">
             <span class="text-white text-xs font-semibold bg-red-500 px-2 py-1 rounded-full">หมดอายุ</span>
           </div>
         </div>
@@ -149,7 +127,7 @@ onMounted(fetchLibrary)
           </div>
 
           <!-- Rental expiry -->
-          <div v-if="book.accessControl?.accessType === 'rental' && book.accessControl?.rentalExpireAt && activeTab === 'rented'" class="text-xs text-gray-400 mb-2 sm:mb-3 flex items-center gap-1">
+          <div v-if="book.accessControl?.accessType === 'rental' && book.accessControl?.rentalExpireAt && book._status === 'rented'" class="text-xs text-gray-400 mb-2 sm:mb-3 flex items-center gap-1">
             <UIcon name="i-lucide-clock" class="w-3 h-3" />
             เหลือ {{ daysLeft(book.accessControl.rentalExpireAt) }} วัน
           </div>
@@ -157,7 +135,7 @@ onMounted(fetchLibrary)
           <!-- Actions -->
           <div class="flex gap-2">
             <UButton
-              v-if="activeTab !== 'expired'"
+              v-if="book._status !== 'expired'"
               :to="`/read/${book._id}`"
               label="อ่านเลย"
               icon="i-lucide-book-open"
