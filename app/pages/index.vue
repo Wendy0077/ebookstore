@@ -207,7 +207,7 @@ const renderStars = (rating: number) => {
                 v-if="hasCover(book)"
                 :src="book.coverImage"
                 :alt="book.title"
-                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
                 @error="onCoverError(book._id)"
               />
               <UIcon v-else name="i-lucide-book-open" class="w-16 h-16 text-indigo-300 dark:text-indigo-700" />
@@ -269,7 +269,7 @@ const renderStars = (rating: number) => {
                   v-if="hasCover(book)"
                   :src="book.coverImage"
                   :alt="book.title"
-                  class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
                   @error="onCoverError(book._id)"
                 />
                 <UIcon v-else name="i-lucide-book-open" class="w-12 h-12 text-gray-300 dark:text-gray-600" />
@@ -369,7 +369,7 @@ const renderStars = (rating: number) => {
                   v-if="hasCover(book)"
                   :src="book.coverImage"
                   :alt="book.title"
-                  class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  class="w-full h-full object-contain transition-transform duration-300 group-hover:scale-105"
                   @error="onCoverError(book._id)"
                 />
                 <UIcon v-else name="i-lucide-book-open" class="w-10 h-10 text-purple-300 dark:text-purple-700" />

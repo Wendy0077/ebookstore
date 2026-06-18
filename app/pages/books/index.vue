@@ -151,7 +151,7 @@ watch(currentPage, loadBooks)
               v-if="hasCover(book)"
               :src="book.coverImage"
               :alt="book.title"
-              class="w-full h-full object-cover"
+              class="w-full h-full object-contain"
               @error="onCoverError(book._id)"
             />
             <UIcon v-else name="i-lucide-book-open" class="w-12 h-12 text-gray-300 dark:text-gray-600" />
