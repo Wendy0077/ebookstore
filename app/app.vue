@@ -111,12 +111,12 @@ const navLinks = [
               { label: user?.name || '', type: 'label' as const }
             ],
             [
-              { label: 'แดชบอร์ด', icon: 'i-lucide-layout-dashboard', to: '/dashboard' },
               { label: 'คลังหนังสือ', icon: 'i-lucide-library', to: '/library' },
               { label: 'รายการที่บันทึก', icon: 'i-lucide-heart', to: '/wishlist' },
               { label: 'คำสั่งซื้อ', icon: 'i-lucide-package', to: '/orders' }
             ],
             ...(user?.role === 'admin' ? [[
+              { label: 'แดชบอร์ด', icon: 'i-lucide-layout-dashboard', to: '/dashboard' },
               { label: 'Admin', icon: 'i-lucide-shield', to: '/admin' }
             ]] : []),
             [
