@@ -113,6 +113,7 @@ const navLinks = [
             [
               { label: 'แดชบอร์ด', icon: 'i-lucide-layout-dashboard', to: '/dashboard' },
               { label: 'คลังหนังสือ', icon: 'i-lucide-library', to: '/library' },
+              { label: 'รายการที่บันทึก', icon: 'i-lucide-heart', to: '/wishlist' },
               { label: 'คำสั่งซื้อ', icon: 'i-lucide-package', to: '/orders' }
             ],
             ...(user?.role === 'admin' ? [[
