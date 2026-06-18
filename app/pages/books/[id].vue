@@ -69,7 +69,7 @@ const handleAddToCart = async (redirectToCheckout = false) => {
       // Even if add fails (already in cart), still go to checkout
       await navigateTo('/checkout')
     } else {
-      toast.add({ title: err.data?.statusMessage || 'เกิดข้อผิดพลาด', color: 'error' })
+      toast.add({ title: err.data?.message || 'เกิดข้อผิดพลาด', color: 'error' })
     }
   }
 }
@@ -89,9 +89,9 @@ const submitReview = async () => {
   } catch (err: any) {
     const status = err.data?.statusCode || err.statusCode
     if (status === 403) {
-      toast.add({ title: err.data?.statusMessage || 'ขออภัย เฉพาะผู้ที่ซื้อหนังสือเล่มนี้แล้วเท่านั้นจึงจะสามารถรีวิวได้', icon: 'i-lucide-shield-alert', color: 'warning' })
+      toast.add({ title: err.data?.message || 'ขออภัย เฉพาะผู้ที่ซื้อหนังสือเล่มนี้แล้วเท่านั้นจึงจะสามารถรีวิวได้', icon: 'i-lucide-shield-alert', color: 'warning' })
     } else {
-      toast.add({ title: err.data?.statusMessage || 'เกิดข้อผิดพลาด', color: 'error' })
+      toast.add({ title: err.data?.message || 'เกิดข้อผิดพลาด', color: 'error' })
     }
   } finally {
     submittingReview.value = false
@@ -127,7 +127,7 @@ const handleToggleWishlist = async () => {
     const res = await toggleWishlist(book.value._id)
     toast.add({ title: res.liked ? 'บันทึกไว้แล้ว' : 'นำออกจากรายการที่บันทึกแล้ว', color: 'neutral' })
   } catch (err: any) {
-    toast.add({ title: err.data?.statusMessage || 'เกิดข้อผิดพลาด', color: 'error' })
+    toast.add({ title: err.data?.message || 'เกิดข้อผิดพลาด', color: 'error' })
   }
 }
 

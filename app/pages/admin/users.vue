@@ -34,7 +34,7 @@ const updateUser = async (userId: string, payload: any) => {
     toast.add({ title: 'อัปเดตผู้ใช้เรียบร้อย', color: 'success' })
     await fetchUsers()
   } catch (err: any) {
-    toast.add({ title: err.data?.statusMessage || 'เกิดข้อผิดพลาด', color: 'error' })
+    toast.add({ title: err.data?.message || 'เกิดข้อผิดพลาด', color: 'error' })
   } finally {
     updatingId.value = null
   }

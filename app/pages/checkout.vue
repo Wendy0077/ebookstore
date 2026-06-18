@@ -89,7 +89,7 @@ const handleCheckout = async () => {
         toast.add({ title: 'ชำระเงินเรียบร้อย!', icon: 'i-lucide-check-circle', color: 'success' })
     } catch (err: any) {
         step.value = 'form'
-        toast.add({ title: err.data?.statusMessage || 'เกิดข้อผิดพลาด', color: 'error' })
+        toast.add({ title: err.data?.message || 'เกิดข้อผิดพลาด', color: 'error' })
     } finally {
         processing.value = false
     }

@@ -17,7 +17,7 @@ const handleRemove = async (bookId: string) => {
     await removeFromCart(bookId)
     toast.add({ title: 'ลบออกจากตะกร้าแล้ว', color: 'neutral' })
   } catch (err: any) {
-    toast.add({ title: err.data?.statusMessage || 'เกิดข้อผิดพลาด', color: 'error' })
+    toast.add({ title: err.data?.message || 'เกิดข้อผิดพลาด', color: 'error' })
   }
 }
 
@@ -26,7 +26,7 @@ const handleChangeType = async (bookId: string, type: 'purchase' | 'rental') => 
     await updateCartItemType(bookId, type)
     toast.add({ title: 'อัปเดตประเภทเรียบร้อย', color: 'neutral' })
   } catch (err: any) {
-    toast.add({ title: err.data?.statusMessage || 'เกิดข้อผิดพลาด', color: 'error' })
+    toast.add({ title: err.data?.message || 'เกิดข้อผิดพลาด', color: 'error' })
   }
 }
 

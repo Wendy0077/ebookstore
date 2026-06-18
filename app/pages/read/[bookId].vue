@@ -47,7 +47,7 @@ const fetchAccess = async () => {
     if (currentPage.value < 1) currentPage.value = 1
     useSeoMeta({ title: `${data.book.title} — อ่านหนังสือ` })
   } catch (err: any) {
-    const msg = err.data?.statusMessage || 'ไม่มีสิทธิ์เข้าถึงหนังสือนี้'
+    const msg = err.data?.message || 'ไม่มีสิทธิ์เข้าถึงหนังสือนี้'
     toast.add({ title: msg, color: 'error' })
     await navigateTo('/library')
   } finally {

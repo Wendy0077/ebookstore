@@ -37,7 +37,7 @@ const deleteReview = async () => {
     showConfirm.value = false
     await fetchReviews()
   } catch (err: any) {
-    toast.add({ title: err.data?.statusMessage || 'ลบไม่สำเร็จ', color: 'error' })
+    toast.add({ title: err.data?.message || 'ลบไม่สำเร็จ', color: 'error' })
   } finally {
     deletingId.value = null
   }
