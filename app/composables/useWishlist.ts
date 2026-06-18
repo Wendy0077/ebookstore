@@ -5,10 +5,12 @@ interface WishlistResponse {
 
 export const useWishlist = () => {
   const ids = useState<string[]>('wishlist_ids', () => [])
+  const books = useState<any[]>('wishlist_books', () => [])
 
   const fetchWishlist = async () => {
     const data = await $fetch<WishlistResponse>('/api/wishlist')
     ids.value = data.ids || []
+    books.value = data.books || []
     return data
   }
 
@@ -18,6 +20,7 @@ export const useWishlist = () => {
       body: { bookId }
     })
     ids.value = data.ids || []
+    if (!data.liked) books.value = books.value.filter(b => b._id !== bookId)
     return data
   }
 
@@ -25,6 +28,7 @@ export const useWishlist = () => {
 
   return {
     ids,
+    books,
     fetchWishlist,
     toggleWishlist,
     isWished
