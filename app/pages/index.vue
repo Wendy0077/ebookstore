@@ -110,7 +110,7 @@ const renderStars = (rating: number) => {
   <div>
     <!-- Hero Section -->
     <section class="hero-gradient text-white py-10 md:py-20 -mt-4">
-      <div class="max-w-7xl mx-auto px-4">
+      <div class="max-w-[96rem] mx-auto px-4">
         <div class="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           <div class="animate-fade-in-up">
             <div class="inline-flex items-center gap-2 bg-white/10 rounded-full px-3 py-1 md:px-4 md:py-1.5 text-xs md:text-sm mb-4 md:mb-6 backdrop-blur">
@@ -154,7 +154,7 @@ const renderStars = (rating: number) => {
     </section>
 
     <!-- Search & Filter Section -->
-    <section class="max-w-7xl mx-auto px-4 mt-4 md:-mt-8 relative z-10">
+    <section class="max-w-[96rem] mx-auto px-4 mt-4 md:-mt-8 relative z-10">
       <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-800 p-4 md:p-6">
         <div class="flex flex-col md:grid md:grid-cols-3 gap-3 md:gap-4">
           <UInput
@@ -183,7 +183,7 @@ const renderStars = (rating: number) => {
 
     <div class="pt-12 md:pt-16 pb-16 space-y-12 md:space-y-16">
       <!-- Featured Books -->
-      <section v-if="featuredBooks.length > 0" class="max-w-7xl mx-auto px-4">
+      <section v-if="featuredBooks.length > 0" class="max-w-[96rem] mx-auto px-4">
         <div class="flex items-center justify-between mb-8">
           <div>
             <h2 class="text-2xl font-bold flex items-center gap-2">
@@ -240,7 +240,7 @@ const renderStars = (rating: number) => {
       </section>
 
       <!-- All Books -->
-      <section class="max-w-7xl mx-auto px-4">
+      <section class="max-w-[96rem] mx-auto px-4">
         <div class="flex items-center justify-between mb-8">
           <h2 class="text-2xl font-bold flex items-center gap-2">
             <UIcon name="i-lucide-library" class="w-6 h-6 text-indigo-500" />
@@ -347,7 +347,7 @@ const renderStars = (rating: number) => {
 
       <!-- Recommendations -->
       <section v-if="recommendations.length > 0" class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-900 dark:to-gray-900 py-16">
-        <div class="max-w-7xl mx-auto px-4">
+        <div class="max-w-[96rem] mx-auto px-4">
           <div class="flex items-center justify-between mb-8">
             <div>
               <h2 class="text-2xl font-bold flex items-center gap-2">
