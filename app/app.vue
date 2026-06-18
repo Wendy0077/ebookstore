@@ -116,7 +116,6 @@ const navLinks = [
               { label: 'คำสั่งซื้อ', icon: 'i-lucide-package', to: '/orders' }
             ],
             ...(user?.role === 'admin' ? [[
-              { label: 'แดชบอร์ด', icon: 'i-lucide-layout-dashboard', to: '/dashboard' },
               { label: 'Admin', icon: 'i-lucide-shield', to: '/admin' }
             ]] : []),
             [
