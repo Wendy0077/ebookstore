@@ -68,10 +68,11 @@ onMounted(fetchReviews)
     </div>
 
     <div v-else class="space-y-4">
-      <div
+      <NuxtLink
         v-for="review in reviews"
         :key="review._id"
-        class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 flex gap-4"
+        :to="`/books/${review.book?._id}`"
+        class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 flex gap-4 hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors"
       >
         <!-- Book cover -->
         <div class="w-12 h-16 rounded-lg bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-950 dark:to-purple-950 flex items-center justify-center flex-shrink-0 overflow-hidden">
@@ -92,7 +93,7 @@ onMounted(fetchReviews)
               variant="ghost"
               size="xs"
               :loading="deletingId === review._id"
-              @click="confirmDelete(review)"
+              @click.stop.prevent="confirmDelete(review)"
             />
           </div>
 
@@ -111,7 +112,7 @@ onMounted(fetchReviews)
           <p v-if="review.comment" class="text-sm text-gray-600 dark:text-gray-400 line-clamp-2">{{ review.comment }}</p>
           <p v-else class="text-xs text-gray-300 italic">ไม่มีความคิดเห็น</p>
         </div>
-      </div>
+      </NuxtLink>
 
       <div v-if="reviews.length === 0" class="text-center py-16 text-gray-400">
         <UIcon name="i-lucide-message-circle" class="w-12 h-12 mx-auto mb-3 text-gray-300" />
