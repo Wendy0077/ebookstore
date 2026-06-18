@@ -77,9 +77,9 @@ const navLinks = [
       <template #right>
         <UColorModeButton />
 
-        <!-- Cart Button -->
+        <!-- Cart Button (hidden on mobile — already in the bottom nav there) -->
         <UButton v-if="isLoggedIn" to="/cart" icon="i-lucide-shopping-cart" color="neutral" variant="ghost"
-          :badge="itemCount > 0 ? itemCount : undefined" aria-label="ตะกร้า" />
+          class="hidden md:inline-flex" :badge="itemCount > 0 ? itemCount : undefined" aria-label="ตะกร้า" />
 
         <!-- Notifications -->
         <UPopover v-if="isLoggedIn" :content="{ side: 'bottom', align: 'end' }">
