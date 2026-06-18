@@ -142,7 +142,7 @@ watch(() => book.value, (b) => {
 </script>
 
 <template>
-  <div class="max-w-7xl mx-auto px-4 py-8">
+  <div class="max-w-[96rem] mx-auto px-4 py-8">
     <!-- Loading -->
     <div v-if="loadingBook" class="flex justify-center py-20">
       <UIcon name="i-lucide-loader-2" class="w-8 h-8 animate-spin text-indigo-500" />
