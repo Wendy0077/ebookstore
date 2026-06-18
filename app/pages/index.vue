@@ -181,101 +181,37 @@ const renderStars = (rating: number) => {
       </div>
     </section>
 
-    <!-- Featured Books -->
-    <section v-if="featuredBooks.length > 0" class="max-w-7xl mx-auto px-4 py-16">
-      <div class="flex items-center justify-between mb-8">
-        <div>
-          <h2 class="text-2xl font-bold flex items-center gap-2">
-            <UIcon name="i-lucide-flame" class="w-6 h-6 text-orange-500" />
-            หนังสือแนะนำ
-          </h2>
-          <p class="text-gray-500 text-sm mt-1">คัดสรรมาเพื่อคุณโดยเฉพาะ</p>
+    <div class="pt-12 md:pt-16 pb-16 space-y-12 md:space-y-16">
+      <!-- Featured Books -->
+      <section v-if="featuredBooks.length > 0" class="max-w-7xl mx-auto px-4">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h2 class="text-2xl font-bold flex items-center gap-2">
+              <UIcon name="i-lucide-flame" class="w-6 h-6 text-orange-500" />
+              หนังสือแนะนำ
+            </h2>
+            <p class="text-gray-500 text-sm mt-1">คัดสรรมาเพื่อคุณโดยเฉพาะ</p>
+          </div>
+          <UButton to="/books" variant="ghost" color="primary" label="ดูทั้งหมด" trailing-icon="i-lucide-arrow-right" />
         </div>
-        <UButton to="/books" variant="ghost" color="primary" label="ดูทั้งหมด" trailing-icon="i-lucide-arrow-right" />
-      </div>
 
-      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 stagger-children">
-        <NuxtLink
-          v-for="book in featuredBooks"
-          :key="book._id"
-          :to="`/books/${book._id}`"
-          class="book-card rounded-2xl overflow-hidden bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 group"
-        >
-          <div class="aspect-[3/4] bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-950 dark:to-purple-950 flex items-center justify-center relative overflow-hidden">
-            <img
-              v-if="hasCover(book)"
-              :src="book.coverImage"
-              :alt="book.title"
-              class="w-full h-full object-cover"
-              @error="onCoverError(book._id)"
-            />
-            <UIcon v-else name="i-lucide-book-open" class="w-16 h-16 text-indigo-300 dark:text-indigo-700" />
-            <div class="absolute top-2 right-2">
-              <UBadge color="warning" variant="solid" size="xs">
-                <UIcon name="i-lucide-star" class="w-3 h-3 mr-1" />
-                {{ book.rating }}
-              </UBadge>
-            </div>
-            <UButton
-              :icon="isWished(book._id) ? 'i-lucide-heart' : 'i-lucide-heart'"
-              :color="isWished(book._id) ? 'error' : 'neutral'"
-              variant="ghost"
-              size="xs"
-              class="absolute bottom-2 right-2"
-              @click.prevent="handleToggleWishlist(book._id)"
-            />
-            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-          </div>
-          <div class="p-4">
-            <h3 class="font-semibold text-sm truncate">{{ book.title }}</h3>
-            <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ book.author }}</p>
-            <div class="flex items-center justify-between mt-3">
-              <span class="text-lg font-bold text-indigo-600 dark:text-indigo-400">฿{{ book.price }}</span>
-              <span v-if="book.isRentable" class="text-xs text-gray-400">เช่า ฿{{ book.rentalPrice }}</span>
-            </div>
-          </div>
-        </NuxtLink>
-      </div>
-    </section>
-
-    <!-- All Books -->
-    <section class="max-w-7xl mx-auto px-4 pb-16">
-      <div class="flex items-center justify-between mb-8">
-        <h2 class="text-2xl font-bold flex items-center gap-2">
-          <UIcon name="i-lucide-library" class="w-6 h-6 text-indigo-500" />
-          หนังสือทั้งหมด
-        </h2>
-      </div>
-
-      <div v-if="loading" class="flex justify-center py-20">
-        <UIcon name="i-lucide-loader-2" class="w-8 h-8 animate-spin text-indigo-500" />
-      </div>
-
-      <div v-else-if="books.length === 0" class="text-center py-20">
-        <UIcon name="i-lucide-book-x" class="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-        <p class="text-gray-500">ไม่พบหนังสือที่ค้นหา</p>
-      </div>
-
-      <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 stagger-children">
-        <div
-          v-for="book in books"
-          :key="book._id"
-          class="book-card rounded-2xl overflow-hidden bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800"
-        >
-          <NuxtLink :to="`/books/${book._id}`">
-            <div class="aspect-[3/4] bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center relative overflow-hidden group">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 stagger-children">
+          <NuxtLink
+            v-for="book in featuredBooks"
+            :key="book._id"
+            :to="`/books/${book._id}`"
+            class="book-card rounded-2xl overflow-hidden bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 group flex flex-col h-full"
+          >
+            <div class="aspect-[3/4] bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-950 dark:to-purple-950 flex items-center justify-center relative overflow-hidden">
               <img
                 v-if="hasCover(book)"
                 :src="book.coverImage"
                 :alt="book.title"
-                class="w-full h-full object-cover"
+                class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 @error="onCoverError(book._id)"
               />
-              <UIcon v-else name="i-lucide-book-open" class="w-12 h-12 text-gray-300 dark:text-gray-600" />
-              <div class="absolute top-2 left-2">
-                <UBadge color="primary" variant="subtle" size="xs">{{ book.category }}</UBadge>
-              </div>
-              <div v-if="book.rating > 0" class="absolute top-2 right-2">
+              <UIcon v-else name="i-lucide-book-open" class="w-16 h-16 text-indigo-300 dark:text-indigo-700" />
+              <div class="absolute top-2 right-2">
                 <UBadge color="warning" variant="solid" size="xs">
                   <UIcon name="i-lucide-star" class="w-3 h-3 mr-1" />
                   {{ book.rating }}
@@ -289,104 +225,172 @@ const renderStars = (rating: number) => {
                 class="absolute bottom-2 right-2"
                 @click.prevent="handleToggleWishlist(book._id)"
               />
+              <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
             </div>
-          </NuxtLink>
-          <div class="p-4">
-            <NuxtLink :to="`/books/${book._id}`">
-              <h3 class="font-semibold text-sm truncate hover:text-indigo-600 transition-colors">{{ book.title }}</h3>
-            </NuxtLink>
-            <p class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{{ book.author }}</p>
-            <div class="text-xs star-gold mt-1">{{ renderStars(book.rating) }}</div>
-
-            <!-- Buy / Rent Toggle -->
-            <div v-if="book.isRentable" class="flex items-center gap-1 mt-3">
-              <button
-                class="flex-1 text-xs font-semibold py-1.5 rounded-lg transition-all"
-                :class="getCartType(book._id) === 'purchase'
-                  ? 'bg-indigo-600 text-white shadow-sm'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'"
-                @click.prevent="setCartType(book._id, 'purchase')"
-              >
-                ซื้อ
-              </button>
-              <button
-                class="flex-1 text-xs font-semibold py-1.5 rounded-lg transition-all"
-                :class="getCartType(book._id) === 'rental'
-                  ? 'bg-purple-600 text-white shadow-sm'
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'"
-                @click.prevent="setCartType(book._id, 'rental')"
-              >
-                เช่า
-              </button>
-            </div>
-
-            <div class="flex items-center justify-between mt-2">
-              <div>
-                <span class="text-lg font-bold" :class="getCartType(book._id) === 'rental' ? 'text-purple-600 dark:text-purple-400' : 'text-indigo-600 dark:text-indigo-400'">
-                  ฿{{ getCartType(book._id) === 'rental' && book.isRentable ? book.rentalPrice : book.price }}
-                </span>
-                <span v-if="getCartType(book._id) === 'rental' && book.isRentable" class="block text-xs text-gray-400">{{ book.rentalDurationDays || 30 }} วัน</span>
-                <span v-else-if="book.isRentable" class="block text-xs text-gray-400">เช่า ฿{{ book.rentalPrice }}</span>
+            <div class="p-4 flex-1 flex flex-col">
+              <h3 class="font-semibold text-sm truncate">{{ book.title }}</h3>
+              <p class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ book.author }}</p>
+              <div class="flex items-center justify-between mt-auto pt-3">
+                <span class="text-lg font-bold text-indigo-600 dark:text-indigo-400">฿{{ book.price }}</span>
+                <span v-if="book.isRentable" class="text-xs text-gray-400">เช่า ฿{{ book.rentalPrice }}</span>
               </div>
-              <UButton
-                :icon="isInCart(book._id) ? 'i-lucide-check' : 'i-lucide-shopping-cart'"
-                :color="isInCart(book._id) ? 'success' : getCartType(book._id) === 'rental' ? 'purple' as any : 'primary'"
-                variant="soft"
-                size="xs"
-                :disabled="isInCart(book._id)"
-                @click.prevent="handleAddToCart(book._id)"
-              />
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Recommendations -->
-    <section v-if="recommendations.length > 0" class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-900 dark:to-gray-900 py-16">
-      <div class="max-w-7xl mx-auto px-4">
-        <div class="flex items-center justify-between mb-8">
-          <div>
-            <h2 class="text-2xl font-bold flex items-center gap-2">
-              <UIcon name="i-lucide-sparkles" class="w-6 h-6 text-purple-500" />
-              แนะนำสำหรับคุณ
-            </h2>
-            <p class="text-gray-500 text-sm mt-1">จากประวัติการอ่านและความชอบของคุณ</p>
-          </div>
-        </div>
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 stagger-children">
-          <NuxtLink
-            v-for="book in recommendations.slice(0, 6)"
-            :key="book._id"
-            :to="`/books/${book._id}`"
-            class="book-card rounded-xl overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700"
-          >
-            <div class="aspect-[3/4] bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-950 dark:to-pink-950 flex items-center justify-center relative overflow-hidden">
-              <img
-                v-if="hasCover(book)"
-                :src="book.coverImage"
-                :alt="book.title"
-                class="w-full h-full object-cover"
-                @error="onCoverError(book._id)"
-              />
-              <UIcon v-else name="i-lucide-book-open" class="w-10 h-10 text-purple-300 dark:text-purple-700" />
-              <UButton
-                :icon="isWished(book._id) ? 'i-lucide-heart' : 'i-lucide-heart'"
-                :color="isWished(book._id) ? 'error' : 'neutral'"
-                variant="ghost"
-                size="xs"
-                class="absolute bottom-2 right-2"
-                @click.prevent="handleToggleWishlist(book._id)"
-              />
-            </div>
-            <div class="p-3">
-              <h3 class="font-medium text-xs truncate">{{ book.title }}</h3>
-              <p class="text-xs text-gray-400 truncate">{{ book.author }}</p>
-              <p class="text-sm font-bold text-indigo-600 dark:text-indigo-400 mt-1">฿{{ book.price }}</p>
             </div>
           </NuxtLink>
         </div>
-      </div>
-    </section>
+      </section>
+
+      <!-- All Books -->
+      <section class="max-w-7xl mx-auto px-4">
+        <div class="flex items-center justify-between mb-8">
+          <h2 class="text-2xl font-bold flex items-center gap-2">
+            <UIcon name="i-lucide-library" class="w-6 h-6 text-indigo-500" />
+            หนังสือทั้งหมด
+          </h2>
+        </div>
+
+        <div v-if="loading" class="flex justify-center py-20">
+          <UIcon name="i-lucide-loader-2" class="w-8 h-8 animate-spin text-indigo-500" />
+        </div>
+
+        <div v-else-if="books.length === 0" class="text-center py-20">
+          <UIcon name="i-lucide-book-x" class="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
+          <p class="text-gray-500">ไม่พบหนังสือที่ค้นหา</p>
+        </div>
+
+        <div v-else class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 stagger-children">
+          <div
+            v-for="book in books"
+            :key="book._id"
+            class="book-card rounded-2xl overflow-hidden bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 flex flex-col h-full"
+          >
+            <NuxtLink :to="`/books/${book._id}`" class="group">
+              <div class="aspect-[3/4] bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-900 flex items-center justify-center relative overflow-hidden">
+                <img
+                  v-if="hasCover(book)"
+                  :src="book.coverImage"
+                  :alt="book.title"
+                  class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  @error="onCoverError(book._id)"
+                />
+                <UIcon v-else name="i-lucide-book-open" class="w-12 h-12 text-gray-300 dark:text-gray-600" />
+                <div class="absolute top-2 left-2">
+                  <UBadge color="primary" variant="subtle" size="xs">{{ book.category }}</UBadge>
+                </div>
+                <div v-if="book.rating > 0" class="absolute top-2 right-2">
+                  <UBadge color="warning" variant="solid" size="xs">
+                    <UIcon name="i-lucide-star" class="w-3 h-3 mr-1" />
+                    {{ book.rating }}
+                  </UBadge>
+                </div>
+                <UButton
+                  :icon="isWished(book._id) ? 'i-lucide-heart' : 'i-lucide-heart'"
+                  :color="isWished(book._id) ? 'error' : 'neutral'"
+                  variant="ghost"
+                  size="xs"
+                  class="absolute bottom-2 right-2"
+                  @click.prevent="handleToggleWishlist(book._id)"
+                />
+              </div>
+            </NuxtLink>
+            <div class="p-4 flex-1 flex flex-col">
+              <NuxtLink :to="`/books/${book._id}`">
+                <h3 class="font-semibold text-sm truncate hover:text-indigo-600 transition-colors">{{ book.title }}</h3>
+              </NuxtLink>
+              <p class="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{{ book.author }}</p>
+              <div class="text-xs star-gold mt-1">{{ renderStars(book.rating) }}</div>
+
+              <div class="mt-auto pt-3">
+                <!-- Buy / Rent Toggle -->
+                <div v-if="book.isRentable" class="flex items-center gap-1 mb-2">
+                  <button
+                    class="flex-1 text-xs font-semibold py-1.5 rounded-lg transition-all"
+                    :class="getCartType(book._id) === 'purchase'
+                      ? 'bg-indigo-600 text-white shadow-sm'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'"
+                    @click.prevent="setCartType(book._id, 'purchase')"
+                  >
+                    ซื้อ
+                  </button>
+                  <button
+                    class="flex-1 text-xs font-semibold py-1.5 rounded-lg transition-all"
+                    :class="getCartType(book._id) === 'rental'
+                      ? 'bg-purple-600 text-white shadow-sm'
+                      : 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700'"
+                    @click.prevent="setCartType(book._id, 'rental')"
+                  >
+                    เช่า
+                  </button>
+                </div>
+
+                <div class="flex items-center justify-between">
+                  <div>
+                    <span class="text-lg font-bold" :class="getCartType(book._id) === 'rental' ? 'text-purple-600 dark:text-purple-400' : 'text-indigo-600 dark:text-indigo-400'">
+                      ฿{{ getCartType(book._id) === 'rental' && book.isRentable ? book.rentalPrice : book.price }}
+                    </span>
+                    <span v-if="getCartType(book._id) === 'rental' && book.isRentable" class="block text-xs text-gray-400">{{ book.rentalDurationDays || 30 }} วัน</span>
+                    <span v-else-if="book.isRentable" class="block text-xs text-gray-400">เช่า ฿{{ book.rentalPrice }}</span>
+                  </div>
+                  <UButton
+                    :icon="isInCart(book._id) ? 'i-lucide-check' : 'i-lucide-shopping-cart'"
+                    :color="isInCart(book._id) ? 'success' : getCartType(book._id) === 'rental' ? 'purple' as any : 'primary'"
+                    variant="soft"
+                    size="xs"
+                    :disabled="isInCart(book._id)"
+                    @click.prevent="handleAddToCart(book._id)"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Recommendations -->
+      <section v-if="recommendations.length > 0" class="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-gray-900 dark:to-gray-900 py-16">
+        <div class="max-w-7xl mx-auto px-4">
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h2 class="text-2xl font-bold flex items-center gap-2">
+                <UIcon name="i-lucide-sparkles" class="w-6 h-6 text-purple-500" />
+                แนะนำสำหรับคุณ
+              </h2>
+              <p class="text-gray-500 text-sm mt-1">จากประวัติการอ่านและความชอบของคุณ</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 stagger-children">
+            <NuxtLink
+              v-for="book in recommendations.slice(0, 6)"
+              :key="book._id"
+              :to="`/books/${book._id}`"
+              class="book-card rounded-xl overflow-hidden bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 group"
+            >
+              <div class="aspect-[3/4] bg-gradient-to-br from-purple-100 to-pink-100 dark:from-purple-950 dark:to-pink-950 flex items-center justify-center relative overflow-hidden">
+                <img
+                  v-if="hasCover(book)"
+                  :src="book.coverImage"
+                  :alt="book.title"
+                  class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  @error="onCoverError(book._id)"
+                />
+                <UIcon v-else name="i-lucide-book-open" class="w-10 h-10 text-purple-300 dark:text-purple-700" />
+                <UButton
+                  :icon="isWished(book._id) ? 'i-lucide-heart' : 'i-lucide-heart'"
+                  :color="isWished(book._id) ? 'error' : 'neutral'"
+                  variant="ghost"
+                  size="xs"
+                  class="absolute bottom-2 right-2"
+                  @click.prevent="handleToggleWishlist(book._id)"
+                />
+              </div>
+              <div class="p-3">
+                <h3 class="font-medium text-xs truncate">{{ book.title }}</h3>
+                <p class="text-xs text-gray-400 truncate">{{ book.author }}</p>
+                <p class="text-sm font-bold text-indigo-600 dark:text-indigo-400 mt-1">฿{{ book.price }}</p>
+              </div>
+            </NuxtLink>
+          </div>
+        </div>
+      </section>
+    </div>
   </div>
 </template>
