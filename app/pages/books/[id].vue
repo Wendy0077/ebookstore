@@ -11,6 +11,7 @@ const reviews = ref<any[]>([])
 const reviewsTotal = ref(0)
 const loadingBook = ref(true)
 const purchaseType = ref<'purchase' | 'rental'>('purchase')
+const alreadyOwned = ref(false)
 
 // Review form
 const showReviewForm = ref(false)
@@ -99,12 +100,21 @@ const submitReview = async () => {
 
 const renderStars = (n: number) => '★'.repeat(Math.round(n)) + '☆'.repeat(5 - Math.round(n))
 
+const checkOwnership = async () => {
+  if (!isLoggedIn.value) return
+  try {
+    const data = await $fetch<any>('/api/library')
+    alreadyOwned.value = (data.purchased || []).some((b: any) => b._id === bookId)
+  } catch { }
+}
+
 onMounted(async () => {
   await loadBook()
   await loadReviews()
   try {
     await fetchWishlist()
   } catch { }
+  await checkOwnership()
 })
 
 const handleToggleWishlist = async () => {
@@ -209,8 +219,18 @@ watch(() => book.value, (b) => {
             </div>
           </div>
 
+          <!-- Already Owned -->
+          <div v-if="alreadyOwned" class="bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900 rounded-2xl p-6 mb-8 flex items-center gap-4">
+            <UIcon name="i-lucide-check-circle" class="w-8 h-8 text-emerald-500 shrink-0" />
+            <div class="flex-1">
+              <p class="font-semibold text-emerald-700 dark:text-emerald-400">คุณซื้อหนังสือเล่มนี้ไปแล้ว</p>
+              <p class="text-sm text-emerald-600/80 dark:text-emerald-500/70">ดาวน์โหลดและอ่านได้ตลอดในคลังหนังสือของคุณ</p>
+            </div>
+            <UButton to="/library" label="ไปคลังหนังสือ" icon="i-lucide-library" color="success" />
+          </div>
+
           <!-- Purchase Options -->
-          <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 mb-8">
+          <div v-else class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 mb-8">
             <div class="flex flex-col sm:flex-row gap-4 mb-6">
               <button class="flex-1 rounded-xl p-4 border-2 transition-all text-left" :class="purchaseType === 'purchase'
                 ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-950'

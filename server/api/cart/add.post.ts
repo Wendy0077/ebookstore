@@ -1,5 +1,6 @@
 import Cart from '../../models/Cart'
 import Book from '../../models/Book'
+import AccessControl from '../../models/AccessControl'
 import { requireAuth } from '../../utils/auth'
 
 export default defineEventHandler(async (event) => {
@@ -13,6 +14,16 @@ export default defineEventHandler(async (event) => {
   const book = await Book.findById(body.bookId)
   if (!book) {
     throw createError({ statusCode: 404, message: 'ไม่พบหนังสือ' })
+  }
+
+  const owned = await AccessControl.findOne({
+    user: user.userId,
+    book: body.bookId,
+    accessType: 'purchase',
+    isActive: true
+  })
+  if (owned) {
+    throw createError({ statusCode: 409, message: 'คุณซื้อหนังสือเล่มนี้ไปแล้ว' })
   }
 
   const type = body.type || 'purchase'
