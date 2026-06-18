@@ -78,7 +78,7 @@ onMounted(fetchLibrary)
       <div
         v-for="book in allBooks"
         :key="book._id"
-        class="flex sm:block bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+        class="flex sm:flex-col bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
         :class="{ 'cursor-pointer': book._status !== 'expired' }"
         @click="openReader(book)"
       >
@@ -111,7 +111,7 @@ onMounted(fetchLibrary)
         </div>
 
         <!-- Info -->
-        <div class="flex-1 min-w-0 p-3 sm:p-4">
+        <div class="flex-1 min-w-0 p-3 sm:p-4 flex flex-col">
           <h3 class="font-semibold text-sm truncate mb-0.5">{{ book.title }}</h3>
           <p class="text-xs text-gray-500 truncate mb-2 sm:mb-3">{{ book.author }}</p>
 
@@ -139,7 +139,7 @@ onMounted(fetchLibrary)
           </div>
 
           <!-- Actions -->
-          <div class="flex gap-2">
+          <div class="flex gap-2 mt-auto">
             <UButton
               v-if="book._status !== 'expired'"
               :to="`/read/${book._id}`"
