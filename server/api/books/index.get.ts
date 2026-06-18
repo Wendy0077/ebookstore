@@ -40,13 +40,11 @@ export default defineEventHandler(async (event) => {
   else if (query.sort === 'popular') sort = { salesCount: -1 }
   else if (query.sort === 'title') sort = { title: 1 }
 
-  const [books, total] = await Promise.all([
+  const [books, total, categories] = await Promise.all([
     Book.find(filter).sort(sort).skip(skip).limit(limit).lean(),
-    Book.countDocuments(filter)
+    Book.countDocuments(filter),
+    Book.distinct('category', { isActive: true })
   ])
-
-  // Get available categories for filters
-  const categories = await Book.distinct('category', { isActive: true })
 
   return {
     books,
