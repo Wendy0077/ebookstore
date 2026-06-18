@@ -84,13 +84,14 @@ const featuredBooks = computed(() =>
   books.value.filter(b => b.isFeatured).slice(0, 5)
 )
 
-onMounted(async () => {
-  await loadBooks()
-  await loadRecommendations()
-  try {
-    await fetchWishlist()
-  } catch {}
-  if (isLoggedIn.value) await fetchCart()
+onMounted(() => {
+  // Run independent fetches in parallel instead of one-after-another —
+  // each is a separate DB round-trip, so awaiting them sequentially was
+  // adding up to a noticeably slow homepage load.
+  loadBooks()
+  loadRecommendations()
+  fetchWishlist().catch(() => {})
+  if (isLoggedIn.value) fetchCart()
 })
 
 watch([searchQuery, selectedCategory, selectedSort], () => {
