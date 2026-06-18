@@ -145,8 +145,8 @@ const renderStars = (rating: number) => {
               :ui="{ item: 'basis-auto' }"
             >
               <template #default="{ item }">
-                <NuxtLink :to="`/books/${item._id}`" class="block px-2 group">
-                  <div class="aspect-[3/4] w-32 rounded-xl overflow-hidden shadow-xl ring-1 ring-white/10">
+                <NuxtLink :to="`/books/${item._id}`" class="block px-3 group">
+                  <div class="aspect-[3/4] w-44 rounded-xl overflow-hidden shadow-xl ring-1 ring-white/10">
                     <img
                       :src="item.coverImage"
                       :alt="item.title"
