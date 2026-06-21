@@ -83,8 +83,9 @@ const navLinks = [
 
         <!-- Notifications -->
         <UPopover v-if="isLoggedIn" :content="{ side: 'bottom', align: 'end' }">
-          <UButton icon="i-lucide-bell" color="neutral" variant="ghost"
-            :badge="unreadCount > 0 ? unreadCount : undefined" aria-label="การแจ้งเตือน" />
+          <UChip color="error" size="3xl" :text="unreadCount > 9 ? '9+' : unreadCount" :show="unreadCount > 0">
+            <UButton icon="i-lucide-bell" color="neutral" variant="ghost" aria-label="การแจ้งเตือน" />
+          </UChip>
 
           <template #content>
             <div class="w-80 max-h-96 overflow-y-auto p-2">
