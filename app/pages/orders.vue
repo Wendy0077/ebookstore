@@ -132,11 +132,7 @@ onMounted(fetchOrders)
                         </div>
                     </div>
 
-                    <div class="flex items-center justify-between pt-3 border-t border-gray-100 dark:border-gray-800">
-                        <span class="text-xs text-gray-400 flex items-center gap-1">
-                            <UIcon name="i-lucide-hash" class="w-3 h-3" />
-                            {{ order._id }}
-                        </span>
+                    <div class="flex items-center justify-end pt-3 border-t border-gray-100 dark:border-gray-800">
                         <span class="text-sm font-bold text-indigo-600 dark:text-indigo-400">รวม ฿{{ order.total
                             }}</span>
                     </div>

@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const now = new Date()
 
   const rows = await AccessControl.aggregate([
-    { $match: { user: new mongoose.Types.ObjectId(user.userId), isActive: true } },
+    { $match: { user: new mongoose.Types.ObjectId(user.userId) } },
     { $lookup: { from: 'books', localField: 'book', foreignField: '_id', as: 'bookDoc' } },
     { $unwind: '$bookDoc' },
     {
@@ -44,12 +44,14 @@ export default defineEventHandler(async (event) => {
 
     if (row.accessType === 'rental') {
       if (row.rentalExpireAt && row.rentalExpireAt < now) {
+        // Naturally expired: keep visible under "expired" even after isActive flips to false.
         expired.push(book)
-        expiredIds.push(row._id)
-      } else {
+        if (row.isActive) expiredIds.push(row._id)
+      } else if (row.isActive) {
         rented.push(book)
       }
-    } else {
+      // else: revoked early (e.g. refund) before natural expiry — hide entirely.
+    } else if (row.isActive) {
       purchased.push(book)
     }
   }

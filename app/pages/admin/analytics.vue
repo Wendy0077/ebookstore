@@ -6,10 +6,42 @@ const toast = useToast()
 const data = ref<any>(null)
 const loading = ref(true)
 
+const toInputDate = (d: Date) => {
+  const tz = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
+  return tz.toISOString().slice(0, 10)
+}
+
+const today = new Date()
+const defaultFrom = new Date(today)
+defaultFrom.setDate(defaultFrom.getDate() - 6)
+
+const dateRange = ref({ from: toInputDate(defaultFrom), to: toInputDate(today) })
+
+const presets = [
+  { label: '7 วัน', days: 7 },
+  { label: '30 วัน', days: 30 },
+  { label: '90 วัน', days: 90 }
+]
+
+const applyPreset = (days: number) => {
+  const to = new Date()
+  const from = new Date()
+  from.setDate(from.getDate() - (days - 1))
+  dateRange.value = { from: toInputDate(from), to: toInputDate(to) }
+  fetchAnalytics()
+}
+
+const applyThisYear = () => {
+  const to = new Date()
+  const from = new Date(to.getFullYear(), 0, 1)
+  dateRange.value = { from: toInputDate(from), to: toInputDate(to) }
+  fetchAnalytics()
+}
+
 const fetchAnalytics = async () => {
   loading.value = true
   try {
-    data.value = await $fetch<any>('/api/admin/analytics')
+    data.value = await $fetch<any>('/api/admin/analytics', { query: { from: dateRange.value.from, to: dateRange.value.to } })
   } catch {
     toast.add({ title: 'โหลด Analytics ไม่สำเร็จ', color: 'error' })
   } finally {
@@ -29,6 +61,10 @@ const maxCategorySales = computed(() => {
 
 const formatCurrency = (n: number) => `฿${(n || 0).toLocaleString()}`
 const formatDate = (d: string) => {
+  if (data.value?.groupBy === 'month') {
+    const [y, m] = d.split('-')
+    return `${m}/${y}`
+  }
   const date = new Date(d)
   return `${date.getDate()}/${date.getMonth() + 1}`
 }
@@ -48,6 +84,27 @@ onMounted(fetchAnalytics)
         <p class="text-gray-500 text-sm mt-1">ข้อมูลสถิติและการวิเคราะห์</p>
       </div>
       <UButton icon="i-lucide-refresh-cw" variant="soft" color="neutral" :loading="loading" @click="fetchAnalytics" />
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3 mb-8">
+      <div class="flex items-center gap-2">
+        <UInput v-model="dateRange.from" type="date" :max="dateRange.to" @change="fetchAnalytics" />
+        <span class="text-gray-400">—</span>
+        <UInput v-model="dateRange.to" type="date" :min="dateRange.from" @change="fetchAnalytics" />
+      </div>
+      <div class="flex items-center gap-2">
+        <UButton
+          v-for="p in presets"
+          :key="p.label"
+          size="xs"
+          variant="soft"
+          color="neutral"
+          @click="applyPreset(p.days)"
+        >
+          {{ p.label }}
+        </UButton>
+        <UButton size="xs" variant="soft" color="neutral" @click="applyThisYear">ปีนี้</UButton>
+      </div>
     </div>
 
     <div v-if="loading" class="flex justify-center py-20">
@@ -78,7 +135,7 @@ onMounted(fetchAnalytics)
       <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6">
         <h2 class="text-lg font-bold mb-6 flex items-center gap-2">
           <UIcon name="i-lucide-trending-up" class="w-5 h-5 text-indigo-500" />
-          ยอดขาย 7 วันล่าสุด
+          ยอดขาย
         </h2>
         <div class="flex items-end gap-3 h-48">
           <div
