@@ -21,6 +21,7 @@ const uploadingCover = ref(false)
 const pdfFile = ref<File | null>(null)
 const uploadingPdf = ref(false)
 const pdfFileName = ref('')
+const detectingPageCount = ref(false)
 
 // ===== Form =====
 const defaultForm = () => ({
@@ -63,7 +64,7 @@ const isEditing = computed(() => !!editingBook.value)
 const fetchBooks = async () => {
   loadingBooks.value = true
   try {
-    const data = await $fetch<any>('/api/books', { params: { limit: 100 } })
+    const data = await $fetch<any>('/api/admin/books', { params: { limit: 100 } })
     books.value = data.books || []
   } catch (err: any) {
     toast.add({ title: 'โหลดหนังสือไม่สำเร็จ', color: 'error' })
@@ -117,6 +118,20 @@ const removeCover = () => {
   form.value.coverImage = ''
 }
 
+const detectPageCount = async (file: File) => {
+  detectingPageCount.value = true
+  try {
+    const { PDFDocument } = await import('pdf-lib')
+    const buffer = await file.arrayBuffer()
+    const doc = await PDFDocument.load(buffer, { ignoreEncryption: true })
+    form.value.pageCount = doc.getPageCount()
+  } catch {
+    toast.add({ title: 'ตรวจจำนวนหน้าไม่สำเร็จ กรุณากรอกเอง', color: 'warning' })
+  } finally {
+    detectingPageCount.value = false
+  }
+}
+
 const handlePdfSelect = (e: Event) => {
   const target = e.target as HTMLInputElement
   if (target.files && target.files[0]) {
@@ -131,6 +146,7 @@ const handlePdfSelect = (e: Event) => {
     }
     pdfFile.value = file
     pdfFileName.value = file.name
+    detectPageCount(file)
   }
 }
 
@@ -148,6 +164,7 @@ const handlePdfDrop = (e: DragEvent) => {
     }
     pdfFile.value = file
     pdfFileName.value = file.name
+    detectPageCount(file)
   }
 }
 
@@ -466,7 +483,10 @@ onMounted(fetchBooks)
                   <UInput v-model.number="form.publishedYear" type="number" placeholder="2024" />
                 </UFormField>
                 <UFormField label="จำนวนหน้า">
-                  <UInput v-model.number="form.pageCount" type="number" placeholder="0" />
+                  <UInput v-model.number="form.pageCount" type="number" placeholder="0" :loading="detectingPageCount" :disabled="detectingPageCount" />
+                  <template v-if="detectingPageCount" #help>
+                    <span class="text-xs text-gray-400">กำลังตรวจจำนวนหน้าจากไฟล์ PDF...</span>
+                  </template>
                 </UFormField>
               </div>
             </div>
