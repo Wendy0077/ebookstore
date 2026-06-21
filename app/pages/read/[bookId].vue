@@ -80,9 +80,14 @@ const forceSaveProgress = () => {
 
 onBeforeRouteLeave(() => { forceSaveProgress() })
 
+const canvasAreaRef = ref<HTMLElement | null>(null)
 const prevPage = () => { if (currentPage.value > 1) currentPage.value-- }
 const nextPage = () => { if (currentPage.value < totalPages.value) currentPage.value++ }
 const goToPage = (p: number) => { currentPage.value = Math.max(1, Math.min(p, totalPages.value)) }
+
+watch(currentPage, () => {
+  canvasAreaRef.value?.scrollTo({ top: 0, left: 0 })
+})
 
 // Zoom
 const scale = ref(1.0)
@@ -291,7 +296,7 @@ onUnmounted(() => {
           </div>
 
           <!-- PDF area -->
-          <div class="reader-canvas-area" :class="{ 'reader-blurred': !isFocused }">
+          <div ref="canvasAreaRef" class="reader-canvas-area" :class="{ 'reader-blurred': !isFocused }">
 
             <!-- Watermark -->
             <div class="reader-watermark" aria-hidden="true">
